@@ -13,4 +13,5 @@ public class BookAuthor {
     private Long bookAuthorId;
     @NotBlank
     private String authorLastName;
+    private String blablub;
 }
