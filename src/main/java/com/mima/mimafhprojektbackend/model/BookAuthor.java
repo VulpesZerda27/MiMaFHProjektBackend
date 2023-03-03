@@ -15,6 +15,7 @@ public class BookAuthor {
     private String authorFirstName;
     @NotBlank
     private String authorLastName;
-
+    private String nickName;
+    private String publisher;
 
 }
