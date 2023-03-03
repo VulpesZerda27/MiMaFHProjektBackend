@@ -11,8 +11,6 @@ public class BookAuthor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long bookAuthorId;
-    @NotNull
-    private String authorFirstName;
     @NotBlank
     private String authorLastName;
 }
