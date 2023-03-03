@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class ShoppingBasket {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long shoppingBasketId;
 
     @OneToOne

@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
 
     private Long categoryId;
     @NotBlank

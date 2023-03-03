@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class MyUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long userId;
     @NotBlank
     @Size(min = 4, max = 20)

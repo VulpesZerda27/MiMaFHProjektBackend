@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class ShoppingBasketItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long ShoppingBasketItemId;
     @PositiveOrZero
     private int shoppingBasketItemQuantity;
