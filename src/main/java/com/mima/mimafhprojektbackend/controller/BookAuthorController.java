@@ -3,6 +3,7 @@ package com.mima.mimafhprojektbackend.controller;
 import com.mima.mimafhprojektbackend.model.BookAuthor;
 import com.mima.mimafhprojektbackend.service.BookAuthorService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,13 +11,10 @@ import java.util.Optional;
 
 @CrossOrigin
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/bookAuthor")
 public class BookAuthorController {
     private final BookAuthorService bookAuthorService;
-
-    public BookAuthorController(BookAuthorService bookAuthorService) {
-        this.bookAuthorService = bookAuthorService;
-    }
 
     @GetMapping
     public List<BookAuthor> getAllBookAuthors() {
