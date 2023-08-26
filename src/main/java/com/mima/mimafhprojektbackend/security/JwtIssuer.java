@@ -1,5 +1,7 @@
 package com.mima.mimafhprojektbackend.security;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -7,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.stereotype.Component;
 
+import javax.xml.crypto.dsig.spec.HMACParameterSpec;
 import java.security.Key;
 import java.time.Duration;
 import java.time.Instant;
@@ -20,15 +23,13 @@ import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 @RequiredArgsConstructor
 public class JwtIssuer {
     private final JwtProperties jwtProperties;
-    public String Issue(Long userId, String email, List<String> roles){
-        Key key = Keys.hmacShaKeyFor(jwtProperties.getSecretKey().getBytes());
+    public String issue(Long userId, String email, List<String> roles){
 
-        return Jwts.builder()
-                .claim("id", userId)
-                .claim("email", email)
-                .claim("roles", roles)
-                .setExpiration(Date.from(Instant.now().plus(Duration.of(1, ChronoUnit.DAYS))))
-                .signWith(key, HS256)
-                .compact();
+        return JWT.create()
+                .withSubject(String.valueOf(userId))
+                .withExpiresAt(Instant.now().plus(Duration.of(1,ChronoUnit.DAYS)))
+                .withClaim("email", email)
+                .withClaim("authorities", roles)
+                .sign(Algorithm.HMAC256(jwtProperties.getSecretKey()));
     }
 }

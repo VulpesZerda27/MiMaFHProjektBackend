@@ -17,9 +17,10 @@ public class AuthController {
     private final JwtIssuer jwtIssuer;
     @PostMapping("/auth/login")
     public LoginResponse login(@RequestBody @Validated LoginRequest request){
-        var token = jwtIssuer.Issue(1L, request.getEmail(), List.of("USER"));
+        var token = jwtIssuer.issue(1L, request.getEmail(), List.of("USER"));
+
         return LoginResponse.builder()
-                .accessToken("Test")
+                .accessToken(token)
                 .build();
     }
 }
