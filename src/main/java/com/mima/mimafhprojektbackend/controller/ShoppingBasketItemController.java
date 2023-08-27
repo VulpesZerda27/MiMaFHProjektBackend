@@ -4,20 +4,18 @@ package com.mima.mimafhprojektbackend.controller;
 import com.mima.mimafhprojektbackend.model.ShoppingBasketItem;
 import com.mima.mimafhprojektbackend.service.ShoppingBasketItemService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/shoppingbasketItems")
 public class ShoppingBasketItemController {
 
     private final ShoppingBasketItemService  shoppingBasketItemService;
-
-    public ShoppingBasketItemController(ShoppingBasketItemService shoppingBasketItemService) {
-        this.shoppingBasketItemService = shoppingBasketItemService;
-    }
 
     @GetMapping
     public List<ShoppingBasketItem> GetAllShoppingBasketItems() {
