@@ -1,4 +1,5 @@
 package com.mima.mimafhprojektbackend.model;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -23,9 +24,10 @@ public class MyUser {
     @Email
     private String userEmail;
     @NotBlank
-    @Size(min = 6, max = 20)
+    //@Size(min = 6, max = 20)
+    @JsonIgnore
     private String userPassword;
-    private Boolean isAdmin;
+    private String role;
 
 
     @OneToOne(mappedBy = "user")

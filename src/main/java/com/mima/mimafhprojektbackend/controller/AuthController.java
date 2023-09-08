@@ -1,8 +1,14 @@
 package com.mima.mimafhprojektbackend.controller;
 
 import com.mima.mimafhprojektbackend.security.JwtIssuer;
+import com.mima.mimafhprojektbackend.security.UserPrincipal;
+import com.mima.mimafhprojektbackend.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,12 +21,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthController {
     private final JwtIssuer jwtIssuer;
+    private final AuthenticationManager authenticationManager;
+    private final AuthService authService;
     @PostMapping("/auth/login")
-    public LoginResponse login(@RequestBody @Validated LoginRequest request){
-        var token = jwtIssuer.issue(1L, request.getEmail(), List.of("USER"));
+    public LoginResponse login(@RequestBody LoginRequest request){
+        return authService.authenticateLogin(request.getEmail(), request.getPassword());
+    }
 
-        return LoginResponse.builder()
-                .accessToken(token)
-                .build();
+    @GetMapping("/securityTest")
+    public String securityTest(){
+        return "It worked!";
     }
 }
