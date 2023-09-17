@@ -12,7 +12,7 @@ public class ShoppingBasket {
     private Long shoppingBasketId;
 
     @OneToOne
-    @JoinColumn(name = "shoppingBasket")
+    @JoinColumn(name = "user_id")
     private MyUser user;
 
     @OneToMany(mappedBy = "shoppingBasket")

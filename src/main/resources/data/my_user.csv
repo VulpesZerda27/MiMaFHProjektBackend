@@ -1,0 +1,5 @@
+1,Alice,Wonderland,alice@bookshop.com,onepillmakesyoularger,ROLE_USER
+2,Bob,Builder,bob@bookshop.com,wecandoit,ROLE_USER
+3,Charlie,Chaplin,charlie@bookshop.com,silentera,ROLE_USER
+4,David,Davidson,david@bookshop.com,davey,ROLE_USER;ROLE_ADMIN
+5,Eva,Evans,eva@bookshop.com,evey,ROLE_USER

@@ -17,10 +17,17 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userService.getUserByEmail(username).orElseThrow();
+        var userRoles = user.getRoles();
+        List<SimpleGrantedAuthority> userAuthorities = null;
+
+        for (String role : userRoles) {
+            userAuthorities.add(new SimpleGrantedAuthority(role));
+        }
+
         return UserPrincipal.builder()
                 .userId(user.getUserId())
                 .email(user.getUserEmail())
-                .authorities(List.of(new SimpleGrantedAuthority(user.getRole())))
+                .authorities(userAuthorities)
                 .password(user.getUserPassword())
                 .build();
     }

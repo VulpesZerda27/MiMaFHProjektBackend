@@ -21,11 +21,11 @@ public class ShoppingBasketItemController {
     public List<ShoppingBasketItem> GetAllShoppingBasketItems() {
         return shoppingBasketItemService.GetAllShoppingBasketItems();
     }
-@GetMapping("/{shoppingBasketItemId}")
+    @GetMapping("/{shoppingBasketItemId}")
     public Optional<ShoppingBasketItem> getShoppingBasketItemById(@PathVariable Long shoppingBasketItemId) {
         return shoppingBasketItemService.getShoppingBasketItemById(shoppingBasketItemId);
     }
-@PostMapping
+    @PostMapping
     public ShoppingBasketItem addShoppingBasketItem(ShoppingBasketItem shoppingBasketItem) {
         return shoppingBasketItemService.addShoppingBasketItem(shoppingBasketItem);
     }

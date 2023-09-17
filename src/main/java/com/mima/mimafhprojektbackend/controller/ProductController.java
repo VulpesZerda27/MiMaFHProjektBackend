@@ -4,6 +4,7 @@ import com.mima.mimafhprojektbackend.model.Product;
 import com.mima.mimafhprojektbackend.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,27 +22,9 @@ public class ProductController {
         return productService.GetAllProducts();
     }
 
-    @PostMapping
-    public Product saveProduct(@RequestBody @Valid Product product) {
-        Long bookAuthorId = product.getBookAuthor().getBookAuthorId();
-        Long categoryId = product.getCategory().getCategoryId();
-        return productService.saveProduct(product, bookAuthorId, categoryId);
-    }
-
     @GetMapping(path="/{productId}")
     public Optional<Product> getProductById(@PathVariable Long productId) {
         return productService.getProductById(productId);
     }
 
-
-
-    @PutMapping("/{productId}")
-    public Product updateProduct(@PathVariable Long productId, @RequestBody @Valid Product productDetails) {
-        return productService.updateProduct(productId, productDetails);
-    }
-
-    @DeleteMapping("/{productId}")
-    public void deleteProductById(@PathVariable  Long productId) {
-        productService.deleteProductById(productId);
-    }
 }

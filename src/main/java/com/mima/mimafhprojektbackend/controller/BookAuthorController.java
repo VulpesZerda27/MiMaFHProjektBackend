@@ -4,6 +4,7 @@ import com.mima.mimafhprojektbackend.model.BookAuthor;
 import com.mima.mimafhprojektbackend.service.BookAuthorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,20 +25,5 @@ public class BookAuthorController {
     @GetMapping("/{bookAuthorId}")
     public Optional<BookAuthor> getBookAuthorById(@PathVariable Long bookAuthorId) {
         return bookAuthorService.getBookAuthorById(bookAuthorId);
-    }
-
-    @PostMapping
-    public BookAuthor createCategory(@RequestBody @Valid BookAuthor bookAuthor) {
-        return bookAuthorService.createBookAuthor(bookAuthor);
-    }
-
-    @PutMapping("/{bookAuthorId}")
-    public BookAuthor updateBookAuthor(@PathVariable Long bookAuthorId, @RequestBody @Valid BookAuthor bookAuthorDetails) {
-        return bookAuthorService.updateBookAuthor(bookAuthorId, bookAuthorDetails);
-    }
-
-    @DeleteMapping("/{bookAuthorId}")
-    public void deleteBookAuthorById(@PathVariable Long bookAuthorId) {
-        bookAuthorService.deleteBookAuthorById(bookAuthorId);
     }
 }
