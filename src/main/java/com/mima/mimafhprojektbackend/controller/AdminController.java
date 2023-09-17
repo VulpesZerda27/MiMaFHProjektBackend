@@ -10,10 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
-@PreAuthorize("hasRole('ROLE_ADMIN')")
+@PreAuthorize("hasAuthority('ADMIN')")
 public class AdminController {
     private final AdminService adminService;
 
@@ -79,9 +81,19 @@ public class AdminController {
 
     //region User methods
 
+    @DeleteMapping("/user/{userId}")
+    public void deleteUser(@PathVariable Long userId) {
+        adminService.deleteUserById(userId);
+    }
+
     @PutMapping("/user/{userId}")
     public MyUser updateUser(@PathVariable Long userId, @RequestBody @Valid MyUser userDetails) {
         return adminService.updateUser(userId, userDetails);
+    }
+
+    @GetMapping
+    public @ResponseBody List<MyUser> GetAllUsers() {
+        return adminService.GetAllUsers();
     }
     //endregion
 }

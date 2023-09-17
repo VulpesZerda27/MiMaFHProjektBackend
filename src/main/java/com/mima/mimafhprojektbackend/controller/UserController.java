@@ -3,6 +3,9 @@ import com.mima.mimafhprojektbackend.model.MyUser;
 import com.mima.mimafhprojektbackend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
@@ -13,13 +16,10 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping
-    public @ResponseBody List<MyUser> GetAllUsers() {
-        return userService.GetAllUsers();
-    }
-
+    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/{userid}")
     public Optional<MyUser> getUserById(@PathVariable Long userid) {
+
         return userService.getUserById(userid);
     }
 
@@ -33,4 +33,9 @@ public class UserController {
         userService.deleteUserById(userId);
     }
 
+    // A helper method to extract the email claim from the Authentication object
+    private String getEmailFromToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName(); // getUsername() returns the email for your UserPrincipal
+    }
 }

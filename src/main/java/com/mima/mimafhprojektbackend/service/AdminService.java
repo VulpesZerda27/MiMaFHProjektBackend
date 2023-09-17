@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AdminService {
@@ -76,6 +78,11 @@ public class AdminService {
 
     public void deleteProductById(Long productId) {
         productRepository.deleteById(productId);
+    }
+
+    public void deleteUserById(Long userId) { userRepository.deleteById(userId); }
+    public List<MyUser> GetAllUsers() {
+        return userRepository.findAll();
     }
 
     public MyUser updateUser(Long userId, MyUser userDetails) {

@@ -15,10 +15,6 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public List<MyUser> GetAllUsers() {
-        return userRepository.findAll();
-    }
-
     public Optional<MyUser> getUserById(Long userId) {
         return userRepository.findById(userId);
     }
@@ -31,7 +27,7 @@ public class UserService {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String bcryptPassword = passwordEncoder.encode(user.getUserPassword());
         user.setUserPassword(bcryptPassword);
-        user.setRoles(Arrays.asList("ROLE_USER"));
+        user.setRoles(Arrays.asList("USER"));
         return userRepository.save(user);
     }
 
