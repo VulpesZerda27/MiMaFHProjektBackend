@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @Entity
-@Table(name = "FileData")
+@Table(name = "ImageData")
 @Data
 @NoArgsConstructor
 @Builder
 
-public class FileData {
+public class ImageData {
     @Id
     @GeneratedValue
     private Long id;
@@ -23,7 +23,7 @@ public class FileData {
 
     private String type;
     @Lob
-    @Column(name = "filedata",length = 1000)
-    private byte[] fileData;
+    @Column(name = "imagedata",length = 1000)
+    private byte[] imageData;
 
 }
