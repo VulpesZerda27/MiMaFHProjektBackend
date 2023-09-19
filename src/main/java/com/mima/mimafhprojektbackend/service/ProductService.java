@@ -33,32 +33,4 @@ public class ProductService {
         return productRepository.findById(productId);
     }
 
-
-    @Transactional
-    public Product saveProduct(Product product, Long bookAuthorId, Long categoryId) {
-        if (bookAuthorId != null) {
-            BookAuthor bookAuthor = bookAuthorRepository.findById(bookAuthorId).orElseThrow();
-            product.setBookAuthor(bookAuthor);
-        }
-        if (categoryId != null) {
-            Category category = categoryRepository.findById(categoryId).orElseThrow();
-            product.setCategory(category);
-        }
-        return productRepository.save(product);
-    }
-
-    public Product updateProduct(Long productId, Product productDetails) {
-        Product product = productRepository.findById(productId).orElseThrow();
-        product.setProductDescription(productDetails.getProductDescription());
-        product.setProductName(productDetails.getProductName());
-        product.setProductPrice(productDetails.getProductPrice());
-        product.setProductQuantity(productDetails.getProductQuantity());
-        return productRepository.save(product);
-    }
-
-
-    public void deleteProductById(Long productId) {
-        productRepository.deleteById(productId);
-    }
-
 }

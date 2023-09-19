@@ -1,43 +1,35 @@
 package com.mima.mimafhprojektbackend.service;
+import com.mima.mimafhprojektbackend.exceptions.EmailAlreadyRegisteredException;
 import com.mima.mimafhprojektbackend.model.MyUser;
-import com.mima.mimafhprojektbackend.model.ShoppingBasket;
-import com.mima.mimafhprojektbackend.repository.ShoppingBasketRepository;
 import com.mima.mimafhprojektbackend.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
-    public List<MyUser> GetAllUsers() {
-        return userRepository.findAll();
-    }
 
     public Optional<MyUser> getUserById(Long userId) {
         return userRepository.findById(userId);
     }
+    public Optional<MyUser> getUserByEmail(String email) {return userRepository.getMyUserByUserEmail(email);}
+    public MyUser createUser(MyUser user) throws EmailAlreadyRegisteredException {
+        if(userRepository.getMyUserByUserEmail(user.getUserEmail()) != null) {
+            throw new EmailAlreadyRegisteredException("The email " + user.getUserEmail() + " is already registered.");
+        }
 
-    public MyUser createUser(MyUser user) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String bcryptPassword = passwordEncoder.encode(user.getUserPassword());
+        user.setUserPassword(bcryptPassword);
+        user.setRoles(Arrays.asList("USER"));
         return userRepository.save(user);
     }
-
-    public MyUser updateUser(Long userId, MyUser userDetails) {
-        MyUser user = userRepository.findById(userId).orElseThrow();
-        user.setUserFirstName(userDetails.getUserFirstName());
-        user.setUserLastName(userDetails.getUserLastName());
-        user.setUserEmail(userDetails.getUserEmail());
-        user.setUserPassword(userDetails.getUserPassword());
-        user.setUserName(userDetails.getUserName());
-        user.setIsAdmin(userDetails.getIsAdmin());
-        return userRepository.save(user);
-    }
-
 
     public void deleteUserById(Long userId) {
         userRepository.deleteById(userId);

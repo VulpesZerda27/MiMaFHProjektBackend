@@ -20,21 +20,4 @@ public class BookAuthorService {
     public Optional<BookAuthor> getBookAuthorById(Long bookAuthorId) {
         return bookAuthorRepository.findById(bookAuthorId);
     }
-
-    public BookAuthor createBookAuthor(BookAuthor bookAuthor) {
-        return bookAuthorRepository.save(bookAuthor);
-    }
-
-    public BookAuthor updateBookAuthor(Long bookAuthorId, BookAuthor bookAuthorDetails) {
-        BookAuthor bookAuthor = bookAuthorRepository.findById(bookAuthorId).orElseThrow();
-       bookAuthor.setAuthorFirstName(bookAuthorDetails.getAuthorFirstName());
-       bookAuthor.setAuthorLastName(bookAuthorDetails.getAuthorLastName());
-
-        return bookAuthorRepository.save(bookAuthor);
-    }
-
-    public void deleteBookAuthorById(Long bookAuthorId) {
-        bookAuthorRepository.deleteById(bookAuthorId);
-    }
-
 }
