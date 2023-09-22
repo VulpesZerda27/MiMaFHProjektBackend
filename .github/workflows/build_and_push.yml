@@ -23,13 +23,13 @@ jobs:
       run: mvn -e -B package --file pom.xml
 
     - name: Build Docker image
-      run: docker build -t vulpeszerda27/bookshop-backend:$GITHUB_SHA .
+      run: docker build -t vulpeszerda27/bookshop-backend:latest .
 
     - name: Login to Docker Hub
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Push Docker image
-      run: docker push vulpeszerda27/bookshop-backend:$GITHUB_SHA
+      run: docker push vulpeszerda27/bookshop-backend:latest
 
       # Set up SSH for deployment
     - name: Setup SSH
@@ -41,4 +41,4 @@ jobs:
 
       # Execute script on remote server
     - name: Deploy to remote server
-      run: ssh -i private_key -o StrictHostKeyChecking=no root@${{ secrets.SERVER_IP }} './pull_and_run.sh'
+      run: ssh -i private_key root@${{ secrets.SERVER_IP }} './pull_and_run.sh'
