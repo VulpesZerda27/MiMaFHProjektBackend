@@ -31,10 +31,14 @@ jobs:
     - name: Push Docker image
       run: docker push vulpeszerda27/bookshop-backend:$GITHUB_SHA
 
-    - name: SSH and run pull_and_run.sh
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SERVER_IP }}
-        username: root
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        script: ./pull_and_run.sh
+      # Set up SSH for deployment
+    - name: Setup SSH
+      env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+          echo "$SSH_PRIVATE_KEY" > private_key
+          chmod 600 private_key
+
+      # Execute script on remote server
+    - name: Deploy to remote server
+      run: ssh -i private_key -o StrictHostKeyChecking=no your_username@your_server_ip './pull_and_run.sh'
