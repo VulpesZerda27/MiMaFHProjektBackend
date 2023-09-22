@@ -41,4 +41,4 @@ jobs:
 
       # Execute script on remote server
     - name: Deploy to remote server
-      run: ssh -i private_key -o StrictHostKeyChecking=no root@"{{ secrets.SERVER_IP }}" './pull_and_run.sh'
+      run: ssh -i private_key -o StrictHostKeyChecking=no root@{{ secrets.SERVER_IP }} './pull_and_run.sh'
