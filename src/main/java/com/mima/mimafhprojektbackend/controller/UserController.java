@@ -16,7 +16,6 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
 
-    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/{userid}")
     public Optional<MyUser> getUserById(@PathVariable Long userid) {
 
