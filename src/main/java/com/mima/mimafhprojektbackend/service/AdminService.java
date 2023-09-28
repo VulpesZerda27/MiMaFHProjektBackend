@@ -1,5 +1,6 @@
 package com.mima.mimafhprojektbackend.service;
 
+import com.mima.mimafhprojektbackend.dto.MyUserDTO;
 import com.mima.mimafhprojektbackend.model.BookAuthor;
 import com.mima.mimafhprojektbackend.model.Category;
 import com.mima.mimafhprojektbackend.model.MyUser;
@@ -85,13 +86,20 @@ public class AdminService {
         return userRepository.findAll();
     }
 
-    public MyUser updateUser(Long userId, MyUser userDetails) {
+    public MyUser updateUser(Long userId, MyUserDTO userDTO) {
         MyUser user = userRepository.findById(userId).orElseThrow();
-        user.setUserFirstName(userDetails.getUserFirstName());
-        user.setUserLastName(userDetails.getUserLastName());
-        user.setUserEmail(userDetails.getUserEmail());
-        user.setUserPassword(userDetails.getUserPassword());
-        user.setRoles(userDetails.getRoles());
+        if (userDTO.getUserFirstName() != null) {
+            user.setUserFirstName(userDTO.getUserFirstName());
+        }
+        if (userDTO.getUserLastName() != null) {
+            user.setUserLastName(userDTO.getUserLastName());
+        }
+        if (userDTO.getUserEmail() != null) {
+            user.setUserEmail(userDTO.getUserEmail());
+        }
+        if (userDTO.getRoles() != null) {
+            user.setRoles(userDTO.getRoles());
+        }
         return userRepository.save(user);
     }
 }
