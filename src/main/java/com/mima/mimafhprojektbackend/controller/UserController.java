@@ -3,6 +3,8 @@ import com.mima.mimafhprojektbackend.model.MyUser;
 import com.mima.mimafhprojektbackend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,21 +18,28 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
 
-    @PreAuthorize("hasAuthority('USER')")
     @GetMapping("/{userid}")
-    public Optional<MyUser> getUserById(@PathVariable Long userid) {
-
-        return userService.getUserById(userid);
+    public ResponseEntity<MyUser> getUserById(@PathVariable Long userid) {
+        Optional<MyUser> user = userService.getUserById(userid);
+        if(user != null){
+            return new ResponseEntity<>(user.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping
-    public MyUser createUser(@Valid @RequestBody MyUser myUser) {
-        return userService.createUser(myUser);
+    public ResponseEntity<MyUser> createUser(@Valid @RequestBody MyUser myUser) {
+        MyUser createdUser = userService.createUser(myUser);
+        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteUserById(@PathVariable Long userId) {
-        userService.deleteUserById(userId);
+    public ResponseEntity<MyUser> deleteUserById(@PathVariable Long userId) {
+        Optional<MyUser> deletedUser = userService.deleteUserById(userId);
+
+        if(deletedUser != null) return new ResponseEntity<>(deletedUser.get(), HttpStatus.OK);
+        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     // A helper method to extract the email claim from the Authentication object

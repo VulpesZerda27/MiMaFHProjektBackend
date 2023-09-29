@@ -10,8 +10,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,8 +40,12 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Autowired
     private ShoppingBasketItemRepository shoppingBasketItemRepository;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseSeeder.class);
+
     @Override
     public void run(String... args) throws Exception {
+        LOGGER.info("Starting data seeding...");
+
         // Populate BookAuthors
         List<BookAuthor> bookAuthors = loadBookAuthorsFromCSV("/data/book_author.csv");
         bookAuthorRepository.saveAll(bookAuthors);
@@ -64,6 +70,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         // Populate ShoppingBasketItems
         List<ShoppingBasketItem> items = loadShoppingBasketItemsFromCSV("/data/shopping_basket_item.csv");
         shoppingBasketItemRepository.saveAll(items);
+
+        LOGGER.info("Data seeding complete.");
     }
 
     private List<ShoppingBasket> loadShoppingBasketsFromCSV(String fileName) throws Exception {

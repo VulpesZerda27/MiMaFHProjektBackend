@@ -1,5 +1,6 @@
 package com.mima.mimafhprojektbackend.controller;
 
+import com.mima.mimafhprojektbackend.dto.MyUserDTO;
 import com.mima.mimafhprojektbackend.model.BookAuthor;
 import com.mima.mimafhprojektbackend.model.Category;
 import com.mima.mimafhprojektbackend.model.MyUser;
@@ -7,6 +8,9 @@ import com.mima.mimafhprojektbackend.model.Product;
 import com.mima.mimafhprojektbackend.service.AdminService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,8 +91,8 @@ public class AdminController {
     }
 
     @PutMapping("/user/{userId}")
-    public MyUser updateUser(@PathVariable Long userId, @RequestBody @Valid MyUser userDetails) {
-        return adminService.updateUser(userId, userDetails);
+    public ResponseEntity<MyUser> updateUser(@PathVariable Long userId, @RequestBody @Valid MyUserDTO userDTO) {
+        return new ResponseEntity<>(adminService.updateUser(userId, userDTO), HttpStatus.OK);
     }
 
     @GetMapping
