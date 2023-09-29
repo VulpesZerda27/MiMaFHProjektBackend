@@ -7,10 +7,14 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class MyUser {
     @Id
     @GeneratedValue
@@ -22,6 +26,7 @@ public class MyUser {
     @NotBlank
     @Email
     private String userEmail;
+    private boolean isEnabled = true;
     @NotBlank
     //@Size(min = 6, max = 20)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

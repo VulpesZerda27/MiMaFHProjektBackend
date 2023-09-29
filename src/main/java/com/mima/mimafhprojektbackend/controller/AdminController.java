@@ -95,9 +95,10 @@ public class AdminController {
         return new ResponseEntity<>(adminService.updateUser(userId, userDTO), HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/user")
     public @ResponseBody List<MyUser> GetAllUsers() {
-        return adminService.GetAllUsers();
+        List<MyUser> toReturn = adminService.GetAllUsers();
+        return toReturn;
     }
     //endregion
 }

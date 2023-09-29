@@ -100,6 +100,12 @@ public class AdminService {
         if (userDTO.getRoles() != null) {
             user.setRoles(userDTO.getRoles());
         }
+        if (userDTO.isEnabled()) {
+            user.setEnabled(true);
+        }
+        else{
+            user.setEnabled(false);
+        }
         return userRepository.save(user);
     }
 }

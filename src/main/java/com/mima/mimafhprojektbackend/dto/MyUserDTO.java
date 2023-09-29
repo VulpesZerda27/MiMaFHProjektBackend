@@ -16,4 +16,5 @@ public class MyUserDTO {
     @Email
     private String userEmail;
     private List<String> roles;
+    private boolean isEnabled;
 }
