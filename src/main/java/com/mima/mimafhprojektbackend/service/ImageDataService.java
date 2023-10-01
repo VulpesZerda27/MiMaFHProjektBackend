@@ -1,4 +1,4 @@
-package com.mima.mimafhprojektbackend.service;
+/*package com.mima.mimafhprojektbackend.service;
 
 import com.mima.mimafhprojektbackend.model.ImageData;
 import com.mima.mimafhprojektbackend.repository.ImageDataRepository;
@@ -35,4 +35,4 @@ public class ImageDataService {
         return images;
     }
 
-}
+}*/

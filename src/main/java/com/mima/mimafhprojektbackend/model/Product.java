@@ -21,6 +21,8 @@ public class Product {
     @PositiveOrZero
     private int productQuantity;
 
+    private String imageName;
+
     @ManyToOne
     @JoinColumn(name="category_id")
     private Category category;
