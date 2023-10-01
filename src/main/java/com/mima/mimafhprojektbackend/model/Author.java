@@ -7,12 +7,12 @@ import lombok.Data;
 //test2
 @Entity
 @Data
-public class BookAuthor {
+public class Author {
     @Id
     @GeneratedValue
-    private Long bookAuthorId;
+    private Long id;
     @NotNull
-    private String authorFirstName;
+    private String firstName;
     @NotBlank
-    private String authorLastName;
+    private String lastName;
 }

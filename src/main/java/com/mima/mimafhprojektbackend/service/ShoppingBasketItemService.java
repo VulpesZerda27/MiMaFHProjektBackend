@@ -30,7 +30,7 @@ public class ShoppingBasketItemService {
 
     public ShoppingBasketItem updateShoppingBasketItem(Long shoppingBasketItemId, ShoppingBasketItem shoppingBasketItemDetails) {
         ShoppingBasketItem shoppingBasketItem = shoppingBasketItemRepository.findById(shoppingBasketItemId).orElseThrow();
-        shoppingBasketItem.setShoppingBasketItemQuantity(shoppingBasketItemDetails.getShoppingBasketItemQuantity());
+        shoppingBasketItem.setQuantity(shoppingBasketItemDetails.getQuantity());
         return shoppingBasketItemRepository.save(shoppingBasketItem);
     }
 

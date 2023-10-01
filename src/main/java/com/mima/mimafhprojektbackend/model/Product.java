@@ -11,15 +11,15 @@ import lombok.Data;
 public class Product {
     @Id
     @GeneratedValue
-    private Long productId;
+    private Long id;
     @NotBlank
-    private String productName;
+    private String name;
     @NotBlank
-    private String productDescription;
+    private String description;
     @Positive
-    private double productPrice;
+    private double price;
     @PositiveOrZero
-    private int productQuantity;
+    private int quantity;
 
     @ManyToOne
     @JoinColumn(name="category_id")
@@ -27,8 +27,8 @@ public class Product {
 
 
     @ManyToOne
-    @JoinColumn(name = "book_author_id")
-    private BookAuthor bookAuthor;
+    @JoinColumn(name = "author_id")
+    private Author author;
 
 
 }

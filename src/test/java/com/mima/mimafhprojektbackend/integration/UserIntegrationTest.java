@@ -29,22 +29,22 @@ public class UserIntegrationTest {
     @Test
     public void testCreateAndRetrieveUser() {
         MyUser user = new MyUser();
-        user.setUserFirstName("John");
-        user.setUserLastName("Doe");
-        user.setUserEmail("john.doe@example.com");
-        user.setUserPassword("password123");
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setEmail("john.doe@example.com");
+        user.setPassword("password123");
         user.setRoles(Arrays.asList("USER"));
 
         user = entityManager.persist(user);
         entityManager.flush();
 
-        Optional<MyUser> foundUser = userRepository.findById(user.getUserId());
+        Optional<MyUser> foundUser = userRepository.findById(user.getId());
 
         assertTrue(foundUser.isPresent());
-        assertEquals(user.getUserFirstName(), foundUser.get().getUserFirstName());
-        assertEquals(user.getUserLastName(), foundUser.get().getUserLastName());
-        assertEquals(user.getUserEmail(), foundUser.get().getUserEmail());
-        assertEquals(user.getUserPassword(), foundUser.get().getUserPassword());
+        assertEquals(user.getFirstName(), foundUser.get().getFirstName());
+        assertEquals(user.getLastName(), foundUser.get().getLastName());
+        assertEquals(user.getEmail(), foundUser.get().getEmail());
+        assertEquals(user.getPassword(), foundUser.get().getPassword());
         assertEquals(user.getRoles(), foundUser.get().getRoles());
     }
 }

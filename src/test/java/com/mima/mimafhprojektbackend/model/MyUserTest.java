@@ -20,36 +20,36 @@ class MyUserTest {
     @Test
     void testUserId() {
         Long id = 1L;
-        myUser.setUserId(id);
-        assertEquals(id, myUser.getUserId());
+        myUser.setId(id);
+        assertEquals(id, myUser.getId());
     }
 
     @Test
     void testUserFirstName() {
         String firstName = "John";
-        myUser.setUserFirstName(firstName);
-        assertEquals(firstName, myUser.getUserFirstName());
+        myUser.setFirstName(firstName);
+        assertEquals(firstName, myUser.getFirstName());
     }
 
     @Test
     void testUserLastName() {
         String lastName = "Doe";
-        myUser.setUserLastName(lastName);
-        assertEquals(lastName, myUser.getUserLastName());
+        myUser.setLastName(lastName);
+        assertEquals(lastName, myUser.getLastName());
     }
 
     @Test
     void testUserEmail() {
         String email = "john.doe@example.com";
-        myUser.setUserEmail(email);
-        assertEquals(email, myUser.getUserEmail());
+        myUser.setEmail(email);
+        assertEquals(email, myUser.getEmail());
     }
 
     @Test
     void testUserPassword() {
         String password = "password123";
-        myUser.setUserPassword(password);
-        assertEquals(password, myUser.getUserPassword());
+        myUser.setPassword(password);
+        assertEquals(password, myUser.getPassword());
     }
 
     @Test

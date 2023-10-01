@@ -43,8 +43,8 @@ class UserControllerTest {
         // Arrange
         Long userId = 1L;
         MyUser user = new MyUser();
-        user.setUserId(userId);
-        user.setUserEmail("test@test.com");
+        user.setId(userId);
+        user.setEmail("test@test.com");
 
         // Mock the behavior of myUserService
         when(myUserService.getUserById(userId)).thenReturn(Optional.of(user));
@@ -55,8 +55,8 @@ class UserControllerTest {
         //Assert
         assertNotNull(userResponse);
         assertEquals(HttpStatus.OK, userResponse.getStatusCode());
-        assertEquals(userId, userResponse.getBody().getUserId());
-        assertEquals("test@test.com", userResponse.getBody().getUserEmail());
+        assertEquals(userId, userResponse.getBody().getId());
+        assertEquals("test@test.com", userResponse.getBody().getEmail());
     }
 
     @org.junit.jupiter.api.Test
@@ -64,7 +64,7 @@ class UserControllerTest {
         // Mock data
         Long userId = 1L;
         MyUser user = new MyUser();
-        user.setUserId(userId);
+        user.setId(userId);
 
         // Mock behavior
         when(myUserService.getUserById(100L)).thenReturn(null);
@@ -82,16 +82,16 @@ class UserControllerTest {
         // Mock data
         Long userId = 1L;
         MyUser existingUser = new MyUser();
-        existingUser.setUserId(userId);
-        existingUser.setUserFirstName("Markus");
+        existingUser.setId(userId);
+        existingUser.setFirstName("Markus");
 
         MyUserDTO userDTO = new MyUserDTO();
-        userDTO.setUserLastName("Huber");
+        userDTO.setLastName("Huber");
 
         MyUser updatedUser = new MyUser();
-        updatedUser.setUserId(userId);
-        updatedUser.setUserFirstName("Markus");
-        updatedUser.setUserLastName("Huber");
+        updatedUser.setId(userId);
+        updatedUser.setFirstName("Markus");
+        updatedUser.setLastName("Huber");
 
         // Mock behavior
         when(adminService.updateUser(userId, userDTO)).thenReturn(updatedUser);
@@ -102,8 +102,8 @@ class UserControllerTest {
         // Assert
         assertTrue(userResponse.hasBody());
         assertEquals(HttpStatus.OK ,userResponse.getStatusCode());
-        assertEquals("Markus", userResponse.getBody().getUserFirstName());
-        assertEquals("Huber", userResponse.getBody().getUserLastName());
+        assertEquals("Markus", userResponse.getBody().getFirstName());
+        assertEquals("Huber", userResponse.getBody().getLastName());
     }
 
     @Test
@@ -111,7 +111,7 @@ class UserControllerTest {
         // Mock data
         Long userId = 1L;
         MyUser toDeleteUser = new MyUser();
-        toDeleteUser.setUserId(userId);
+        toDeleteUser.setId(userId);
         Optional<MyUser> toDeleteOptional = Optional.of(toDeleteUser);
 
         // Mock behaviour

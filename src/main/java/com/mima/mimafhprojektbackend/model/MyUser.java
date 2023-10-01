@@ -1,12 +1,8 @@
 package com.mima.mimafhprojektbackend.model;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,24 +14,24 @@ import java.util.List;
 public class MyUser {
     @Id
     @GeneratedValue
-    private Long userId;
+    private Long id;
     @NotBlank
-    private String userFirstName;
+    private String firstName;
     @NotBlank
-    private String userLastName;
+    private String lastName;
     @NotBlank
     @Email
-    private String userEmail;
-    private boolean isEnabled = true;
+    private String email;
+    private boolean isEnabled;
     @NotBlank
     //@Size(min = 6, max = 20)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String userPassword;
+    private String password;
     @ElementCollection
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "role")
     private List<String> roles;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "shopping_basket_id", referencedColumnName = "shoppingBasketId")
+    @JoinColumn(name = "shopping_basket_id")
     private ShoppingBasket shoppingBasket;
 }

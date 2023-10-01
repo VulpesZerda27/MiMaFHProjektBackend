@@ -29,7 +29,7 @@ class UserServiceTest {
         // Mock data
         Long userId = 1L;
         MyUser user = new MyUser();
-        user.setUserId(userId);
+        user.setId(userId);
 
         // Mock behavior
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
@@ -47,10 +47,10 @@ class UserServiceTest {
         // Mock data
         String email = "test@test.com";
         MyUser user = new MyUser();
-        user.setUserEmail(email);
+        user.setEmail(email);
 
         // Mock behavior
-        when(userRepository.getMyUserByUserEmail(email)).thenReturn(Optional.of(user));
+        when(userRepository.getMyUserByEmail(email)).thenReturn(Optional.of(user));
 
         // Action
         Optional<MyUser> result = userService.getUserByEmail(email);
@@ -64,10 +64,10 @@ class UserServiceTest {
     void testCreateUser_EmailAlreadyExists() {
         // Mock data
         MyUser user = new MyUser();
-        user.setUserEmail("test@test.com");
+        user.setEmail("test@test.com");
 
         // Mock behavior
-        when(userRepository.getMyUserByUserEmail(user.getUserEmail())).thenReturn(Optional.of(user));
+        when(userRepository.getMyUserByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
         // Action & Assert
         assertThrows(EmailAlreadyRegisteredException.class, () -> userService.createUser(user));
@@ -77,17 +77,17 @@ class UserServiceTest {
     void testCreateUser() throws EmailAlreadyRegisteredException {
         // Mock data
         MyUser user = new MyUser();
-        user.setUserEmail("newuser@test.com");
-        user.setUserPassword("plaintextpassword");
+        user.setEmail("newuser@test.com");
+        user.setPassword("plaintextpassword");
 
         MyUser savedUser = new MyUser();
-        savedUser.setUserEmail("newuser@test.com");
+        savedUser.setEmail("newuser@test.com");
         // This will typically be some hashed value.
-        savedUser.setUserPassword("hashedpassword");
+        savedUser.setPassword("hashedpassword");
         savedUser.setRoles(Arrays.asList("USER"));
 
         // Mock behavior
-        when(userRepository.getMyUserByUserEmail(user.getUserEmail())).thenReturn(null);
+        when(userRepository.getMyUserByEmail(user.getEmail())).thenReturn(null);
         when(userRepository.save(any(MyUser.class))).thenReturn(savedUser);
 
         // Action
@@ -102,7 +102,7 @@ class UserServiceTest {
         // Mock data
         Long userId = 1L;
         MyUser user = new MyUser();
-        user.setUserId(userId);
+        user.setId(userId);
 
         // Mock behavior
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));

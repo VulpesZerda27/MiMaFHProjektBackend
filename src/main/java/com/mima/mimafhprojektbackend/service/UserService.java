@@ -7,7 +7,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,16 +17,17 @@ public class UserService {
     public Optional<MyUser> getUserById(Long userId) {
         return userRepository.findById(userId);
     }
-    public Optional<MyUser> getUserByEmail(String email) {return userRepository.getMyUserByUserEmail(email);}
+    public Optional<MyUser> getUserByEmail(String email) {return userRepository.getMyUserByEmail(email);}
     public MyUser createUser(MyUser user) throws EmailAlreadyRegisteredException {
-        if(userRepository.getMyUserByUserEmail(user.getUserEmail()) != null) {
-            throw new EmailAlreadyRegisteredException("The email " + user.getUserEmail() + " is already registered.");
+        if(userRepository.getMyUserByEmail(user.getEmail()) != null) {
+            throw new EmailAlreadyRegisteredException("The email " + user.getEmail() + " is already registered.");
         }
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String bcryptPassword = passwordEncoder.encode(user.getUserPassword());
-        user.setUserPassword(bcryptPassword);
+        String bcryptPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(bcryptPassword);
         user.setRoles(Arrays.asList("USER"));
+        user.setEnabled(true);
         return userRepository.save(user);
     }
 

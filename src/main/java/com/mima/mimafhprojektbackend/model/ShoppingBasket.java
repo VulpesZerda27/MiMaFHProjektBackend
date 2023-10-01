@@ -2,7 +2,6 @@ package com.mima.mimafhprojektbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
@@ -16,7 +15,7 @@ import java.util.List;
 public class ShoppingBasket {
     @Id
     @GeneratedValue
-    private Long shoppingBasketId;
+    private Long id;
 
     @OneToOne
     @JoinColumn(name = "user_id")

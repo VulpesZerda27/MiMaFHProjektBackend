@@ -1,15 +1,17 @@
 package com.mima.mimafhprojektbackend.controller;
 
 import com.mima.mimafhprojektbackend.dto.MyUserDTO;
-import com.mima.mimafhprojektbackend.model.BookAuthor;
+import com.mima.mimafhprojektbackend.model.Author;
 import com.mima.mimafhprojektbackend.model.Category;
 import com.mima.mimafhprojektbackend.model.MyUser;
 import com.mima.mimafhprojektbackend.model.Product;
 import com.mima.mimafhprojektbackend.service.AdminService;
+import com.mima.mimafhprojektbackend.service.BookAuthorService;
+import com.mima.mimafhprojektbackend.service.CategoryService;
+import com.mima.mimafhprojektbackend.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,16 +24,24 @@ import java.util.List;
 @PreAuthorize("hasAuthority('ADMIN')")
 public class AdminController {
     private final AdminService adminService;
+    private final ProductService productService;
+    private final CategoryService categoryService;
+    private final BookAuthorService bookAuthorService;
 
     //region BookAuthor methods
+    @GetMapping("/bookAuthor")
+    public List<Author> getAllBookAuthors() {
+        return bookAuthorService.getAllBookAuthors();
+    }
+
     @PostMapping("/bookAuthor")
-    public BookAuthor createCategory(@RequestBody @Valid BookAuthor bookAuthor) {
-        return adminService.createBookAuthor(bookAuthor);
+    public Author createCategory(@RequestBody @Valid Author author) {
+        return adminService.createBookAuthor(author);
     }
 
     @PutMapping("/bookAuthor/{bookAuthorId}")
-    public BookAuthor updateBookAuthor(@PathVariable Long bookAuthorId, @RequestBody @Valid BookAuthor bookAuthorDetails) {
-        return adminService.updateBookAuthor(bookAuthorId, bookAuthorDetails);
+    public Author updateBookAuthor(@PathVariable Long bookAuthorId, @RequestBody @Valid Author authorDetails) {
+        return adminService.updateBookAuthor(bookAuthorId, authorDetails);
     }
 
     @DeleteMapping("/bookAuthor/{bookAuthorId}")
@@ -41,6 +51,11 @@ public class AdminController {
     //endregion
 
     //region Category methods
+
+    @GetMapping("/category")
+    public List<Category> getAllCategories() {
+        return categoryService.getAllCategories();
+    }
 
     @PostMapping("/category")
     public Category createCategory(@RequestBody @Valid Category category) {
@@ -62,6 +77,11 @@ public class AdminController {
 
     //region Product methods
 
+    @GetMapping("/product")
+    public List<Product> GetAllProducts() {
+        return productService.GetAllProducts();
+    }
+
     @PutMapping("/product/{productId}")
     public Product updateProduct(@PathVariable Long productId, @RequestBody @Valid Product productDetails) {
         return adminService.updateProduct(productId, productDetails);
@@ -76,8 +96,8 @@ public class AdminController {
 
     @PostMapping("/product")
     public Product saveProduct(@RequestBody @Valid Product product) {
-        Long bookAuthorId = product.getBookAuthor().getBookAuthorId();
-        Long categoryId = product.getCategory().getCategoryId();
+        Long bookAuthorId = product.getAuthor().getId();
+        Long categoryId = product.getCategory().getId();
         return adminService.saveProduct(product, bookAuthorId, categoryId);
     }
 

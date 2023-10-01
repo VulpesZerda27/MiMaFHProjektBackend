@@ -26,10 +26,10 @@ public class CustomUserDetailService implements UserDetailsService {
         }
 
         return UserPrincipal.builder()
-                .userId(user.getUserId())
-                .email(user.getUserEmail())
+                .userId(user.getId())
+                .email(user.getEmail())
                 .authorities(userAuthorities)
-                .password(user.getUserPassword())
+                .password(user.getPassword())
                 .build();
     }
 }
