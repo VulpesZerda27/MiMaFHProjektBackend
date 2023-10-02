@@ -8,8 +8,8 @@ public class Category {
     @Id
     @GeneratedValue
 
-    private Long categoryId;
+    private Long id;
     @NotBlank
-    private String categoryName;
+    private String name;
 
 }

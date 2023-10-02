@@ -1,21 +1,24 @@
 package com.mima.mimafhprojektbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 public class ShoppingBasketItem {
     @Id
     @GeneratedValue
-    private Long ShoppingBasketItemId;
+    private Long id;
     @PositiveOrZero
-    private int shoppingBasketItemQuantity;
+    private int quantity;
 
     @ManyToOne
-    @JoinColumn(name = "basket_id")
+    @JoinColumn(name = "shopping_basket_id")
+    @JsonIgnore
     private ShoppingBasket shoppingBasket;
 
     @ManyToOne

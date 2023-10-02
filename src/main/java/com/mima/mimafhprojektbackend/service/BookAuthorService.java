@@ -1,5 +1,5 @@
 package com.mima.mimafhprojektbackend.service;
-import com.mima.mimafhprojektbackend.model.BookAuthor;
+import com.mima.mimafhprojektbackend.model.Author;
 import com.mima.mimafhprojektbackend.repository.BookAuthorRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +13,11 @@ public class BookAuthorService {
     public BookAuthorService(BookAuthorRepository bookAuthorRepository) {
         this.bookAuthorRepository = bookAuthorRepository;
     }
-    public List<BookAuthor> getAllBookAuthors() {
+    public List<Author> getAllBookAuthors() {
         return bookAuthorRepository.findAll();
     }
 
-    public Optional<BookAuthor> getBookAuthorById(Long bookAuthorId) {
+    public Optional<Author> getBookAuthorById(Long bookAuthorId) {
         return bookAuthorRepository.findById(bookAuthorId);
     }
 }

@@ -10,8 +10,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,11 +40,15 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Autowired
     private ShoppingBasketItemRepository shoppingBasketItemRepository;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseSeeder.class);
+
     @Override
     public void run(String... args) throws Exception {
+        LOGGER.info("Starting data seeding...");
+
         // Populate BookAuthors
-        List<BookAuthor> bookAuthors = loadBookAuthorsFromCSV("/data/book_author.csv");
-        bookAuthorRepository.saveAll(bookAuthors);
+        List<Author> authors = loadBookAuthorsFromCSV("/data/book_author.csv");
+        bookAuthorRepository.saveAll(authors);
 
         // Populate Categories
         List<Category> categories = loadCategoriesFromCSV("/data/category.csv");
@@ -64,6 +70,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         // Populate ShoppingBasketItems
         List<ShoppingBasketItem> items = loadShoppingBasketItemsFromCSV("/data/shopping_basket_item.csv");
         shoppingBasketItemRepository.saveAll(items);
+
+        LOGGER.info("Data seeding complete.");
     }
 
     private List<ShoppingBasket> loadShoppingBasketsFromCSV(String fileName) throws Exception {
@@ -74,7 +82,7 @@ public class DatabaseSeeder implements CommandLineRunner {
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
                 ShoppingBasket basket = new ShoppingBasket();
-                basket.setShoppingBasketId(Long.parseLong(fields[0].trim()));
+                basket.setId(Long.parseLong(fields[0].trim()));
                 // Logic to link to MyUser can be added here.
                 baskets.add(basket);
             }
@@ -90,8 +98,8 @@ public class DatabaseSeeder implements CommandLineRunner {
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
                 ShoppingBasketItem item = new ShoppingBasketItem();
-                item.setShoppingBasketItemId(Long.parseLong(fields[0].trim()));
-                item.setShoppingBasketItemQuantity(Integer.parseInt(fields[1].trim()));
+                item.setId(Long.parseLong(fields[0].trim()));
+                item.setQuantity(Integer.parseInt(fields[1].trim()));
 
                 // Linking to ShoppingBasket
                 Long basketId = Long.parseLong(fields[2].trim());
@@ -117,25 +125,25 @@ public class DatabaseSeeder implements CommandLineRunner {
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
                 Category category = new Category();
-                category.setCategoryId(Long.parseLong(fields[0].trim()));
-                category.setCategoryName(fields[1].trim());
+                category.setId(Long.parseLong(fields[0].trim()));
+                category.setName(fields[1].trim());
                 categories.add(category);
             }
         }
         return categories;
     }
 
-    private List<BookAuthor> loadBookAuthorsFromCSV(String fileName) throws Exception {
-        List<BookAuthor> authors = new ArrayList<>();
+    private List<Author> loadBookAuthorsFromCSV(String fileName) throws Exception {
+        List<Author> authors = new ArrayList<>();
         Resource resource = new ClassPathResource(fileName);  // Use ClassPathResource to load the CSV
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
-                BookAuthor author = new BookAuthor();
-                author.setBookAuthorId(Long.parseLong(fields[0].trim()));
-                author.setAuthorFirstName(fields[1].trim());
-                author.setAuthorLastName(fields[2].trim());
+                Author author = new Author();
+                author.setId(Long.parseLong(fields[0].trim()));
+                author.setFirstName(fields[1].trim());
+                author.setLastName(fields[2].trim());
                 authors.add(author);
             }
         }
@@ -151,14 +159,14 @@ public class DatabaseSeeder implements CommandLineRunner {
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
                 MyUser user = new MyUser();
-                user.setUserId(Long.parseLong(fields[0].trim()));
-                user.setUserFirstName(fields[1].trim());
-                user.setUserLastName(fields[2].trim());
-                user.setUserEmail(fields[3].trim());
+                user.setId(Long.parseLong(fields[0].trim()));
+                user.setFirstName(fields[1].trim());
+                user.setLastName(fields[2].trim());
+                user.setEmail(fields[3].trim());
 
                 BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                 String bcryptPassword = passwordEncoder.encode(fields[4].trim());
-                user.setUserPassword(bcryptPassword);
+                user.setPassword(bcryptPassword);
 
                 String[] roleFields = fields[5].trim().split(";");
                 user.setRoles(Arrays.asList(roleFields));
@@ -166,7 +174,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 // Create a new ShoppingBasket for the user and set it
                 ShoppingBasket basket = new ShoppingBasket();
                 user.setShoppingBasket(basket);   // this will also set the user for the basket because of the bidirectional association
-
+                user.setEnabled(true);
                 users.add(user);
             }
         }
@@ -182,11 +190,11 @@ public class DatabaseSeeder implements CommandLineRunner {
             while ((line = reader.readLine()) != null) {
                 String[] fields = line.split(",");
                 Product product = new Product();
-                product.setProductId(Long.parseLong(fields[0].trim()));
-                product.setProductName(fields[1].trim());
-                product.setProductDescription(fields[2].trim());
-                product.setProductPrice(Double.parseDouble(fields[3].trim()));
-                product.setProductQuantity(Integer.parseInt(fields[4].trim()));
+                product.setId(Long.parseLong(fields[0].trim()));
+                product.setName(fields[1].trim());
+                product.setDescription(fields[2].trim());
+                product.setPrice(Double.parseDouble(fields[3].trim()));
+                product.setQuantity(Integer.parseInt(fields[4].trim()));
 
                 // Linking to Category
                 Long categoryId = Long.parseLong(fields[5].trim());
@@ -195,8 +203,8 @@ public class DatabaseSeeder implements CommandLineRunner {
 
                 // Linking to BookAuthor
                 Long authorId = Long.parseLong(fields[6].trim());
-                BookAuthor author = bookAuthorRepository.findById(authorId).orElse(null);
-                product.setBookAuthor(author);
+                Author author = bookAuthorRepository.findById(authorId).orElse(null);
+                product.setAuthor(author);
 
                 products.add(product);
             }
