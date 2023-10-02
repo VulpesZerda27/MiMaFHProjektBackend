@@ -1,6 +1,7 @@
 package com.mima.mimafhprojektbackend.service;
 
 import com.mima.mimafhprojektbackend.dto.MyUserDTO;
+import com.mima.mimafhprojektbackend.dto.ProductDTO;
 import com.mima.mimafhprojektbackend.model.Author;
 import com.mima.mimafhprojektbackend.model.Category;
 import com.mima.mimafhprojektbackend.model.MyUser;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -55,24 +57,73 @@ public class AdminService {
     }
 
     @Transactional
-    public Product saveProduct(Product product, Long bookAuthorId, Long categoryId) {
-        if (bookAuthorId != null) {
-            Author author = bookAuthorRepository.findById(bookAuthorId).orElseThrow();
-            product.setAuthor(author);
+    public Product saveProduct(ProductDTO productDetails) {
+        Product product = new Product();
+
+        if(productDetails.getDescription() != null) {
+            product.setDescription(productDetails.getDescription());
         }
-        if (categoryId != null) {
-            Category category = categoryRepository.findById(categoryId).orElseThrow();
-            product.setCategory(category);
+        if(productDetails.getName() != null) {
+            product.setName(productDetails.getName());
         }
+        if(productDetails.getPrice() != 0) {
+            product.setPrice(productDetails.getPrice());
+        }
+        if(productDetails.getQuantity() != 0) {
+            product.setQuantity(productDetails.getQuantity());
+        }
+        if(productDetails.getImageName() != null){
+            product.setImageName(productDetails.getImageName());
+        }
+        if(productDetails.getCategory() != null){
+            Optional<Category> category = categoryRepository.getCategoryByName(productDetails.getCategory());
+            if(category.isPresent()){
+                product.setCategory(category.get());
+            }
+        }
+        if(productDetails.getAuthor() != null){
+            String[] authorname = productDetails.getAuthor().split(" ");
+            Optional<Author> author = bookAuthorRepository.getAuthorByFirstNameAndLastName(authorname[0],  authorname[1]);
+            if(author.isPresent()){
+                product.setAuthor(author.get());
+            }
+        }
+
         return productRepository.save(product);
     }
 
-    public Product updateProduct(Long productId, Product productDetails) {
+    public Product updateProduct(Long productId, ProductDTO productDetails) {
         Product product = productRepository.findById(productId).orElseThrow();
-        product.setDescription(productDetails.getDescription());
-        product.setName(productDetails.getName());
-        product.setPrice(productDetails.getPrice());
-        product.setQuantity(productDetails.getQuantity());
+
+        if(productDetails.getDescription() != null) {
+            product.setDescription(productDetails.getDescription());
+        }
+        if(productDetails.getName() != null) {
+            product.setName(productDetails.getName());
+        }
+        if(productDetails.getPrice() != 0) {
+            product.setPrice(productDetails.getPrice());
+        }
+        if(productDetails.getQuantity() != 0) {
+            product.setQuantity(productDetails.getQuantity());
+        }
+        if(productDetails.getImageName() != null){
+            product.setImageName(productDetails.getImageName());
+        }
+        if(productDetails.getCategory() != null){
+            Optional<Category> category = categoryRepository.getCategoryByName(productDetails.getCategory());
+            if(category.isPresent()){
+                product.setCategory(category.get());
+            }
+        }
+        if(productDetails.getAuthor() != null){
+            String[] authorname = productDetails.getAuthor().split(" ");
+            Optional<Author> author = bookAuthorRepository.getAuthorByFirstNameAndLastName(authorname[0],  authorname[1]);
+            if(author.isPresent()){
+                product.setAuthor(author.get());
+            }
+        }
+
         return productRepository.save(product);
     }
 

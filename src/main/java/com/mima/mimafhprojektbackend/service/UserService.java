@@ -1,6 +1,7 @@
 package com.mima.mimafhprojektbackend.service;
 import com.mima.mimafhprojektbackend.exceptions.EmailAlreadyRegisteredException;
 import com.mima.mimafhprojektbackend.model.MyUser;
+import com.mima.mimafhprojektbackend.model.ShoppingBasket;
 import com.mima.mimafhprojektbackend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,7 +20,9 @@ public class UserService {
     }
     public Optional<MyUser> getUserByEmail(String email) {return userRepository.getMyUserByEmail(email);}
     public MyUser createUser(MyUser user) throws EmailAlreadyRegisteredException {
-        if(userRepository.getMyUserByEmail(user.getEmail()) != null) {
+        Optional<MyUser> optionalMyUser = userRepository.getMyUserByEmail(user.getEmail());
+
+        if(optionalMyUser.isPresent()) {
             throw new EmailAlreadyRegisteredException("The email " + user.getEmail() + " is already registered.");
         }
 
@@ -28,6 +31,7 @@ public class UserService {
         user.setPassword(bcryptPassword);
         user.setRoles(Arrays.asList("USER"));
         user.setEnabled(true);
+        user.setShoppingBasket(new ShoppingBasket());
         return userRepository.save(user);
     }
 

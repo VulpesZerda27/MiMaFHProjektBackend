@@ -1,6 +1,7 @@
 package com.mima.mimafhprojektbackend.controller;
 
 import com.mima.mimafhprojektbackend.dto.MyUserDTO;
+import com.mima.mimafhprojektbackend.dto.ProductDTO;
 import com.mima.mimafhprojektbackend.model.Author;
 import com.mima.mimafhprojektbackend.model.Category;
 import com.mima.mimafhprojektbackend.model.MyUser;
@@ -95,10 +96,9 @@ public class AdminController {
     }
 
     @PutMapping("/product/{productId}")
-    public Product updateProduct(@PathVariable Long productId, @RequestBody @Valid Product productDetails) {
+    public Product updateProduct(@PathVariable Long productId, @RequestBody @Valid ProductDTO productDetails) {
         return adminService.updateProduct(productId, productDetails);
     }
-
 
     @DeleteMapping("/product/{productId}")
     public void deleteProductById(@PathVariable Long productId) {
@@ -107,10 +107,8 @@ public class AdminController {
 
 
     @PostMapping("/product")
-    public Product saveProduct(@RequestBody @Valid Product product) {
-        Long bookAuthorId = product.getAuthor().getId();
-        Long categoryId = product.getCategory().getId();
-        return adminService.saveProduct(product, bookAuthorId, categoryId);
+    public Product saveProduct(@RequestBody @Valid ProductDTO productDetails) {
+        return adminService.saveProduct(productDetails);
     }
 
     //endregion
@@ -156,22 +154,17 @@ public class AdminController {
                 imageUUID = imageName;
             }
 
-            Optional<Product> productOptional = productService.getProductById(productId);
-
-            if(productOptional.isPresent()){
-                Product product = productOptional.get();
-                product.setImageName(imageUUID);
+            ProductDTO productDetails = new ProductDTO();
+            productDetails.setImageName(imageUUID);
 
             // Handle exceptions properly, this is just an example
             try {
-                Product updatedProduct = adminService.updateProduct(productId, product);
+                Product updatedProduct = adminService.updateProduct(productId, productDetails);
                 return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
             } catch (Exception e) {
                 // Handle product service exception
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            }
-            else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
     @GetMapping("/image/{productId}")
