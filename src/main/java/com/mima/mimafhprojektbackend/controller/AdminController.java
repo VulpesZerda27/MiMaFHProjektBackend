@@ -11,12 +11,18 @@ import com.mima.mimafhprojektbackend.service.CategoryService;
 import com.mima.mimafhprojektbackend.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -128,10 +134,10 @@ public class AdminController {
     }
     //endregion
 
-        private static final String uploadDir = "/path/to/your/upload/directory";
+        private static final String uploadDir = "src/main/java/com/mima/mimafhprojektbackend/images";
 
         @PostMapping("/image/{productId}")
-        public ResponseEntity<Product> addProduct(@PathVariable Long productId,
+        public ResponseEntity<Product> addImageToProduct(@PathVariable Long productId,
                                                   @RequestParam("productImage") MultipartFile imageFile,
                                                   @RequestParam("imageName") String imageName) {
 
@@ -167,4 +173,51 @@ public class AdminController {
             }
             else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+    @GetMapping("/image/{productId}")
+    public ResponseEntity<Resource> downloadProductImage(@PathVariable Long productId) {
+
+        // Fetch the product
+        Optional<Product> productOptional = productService.getProductById(productId);
+        if (!productOptional.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        Product product = productOptional.get();
+        String imageName = product.getImageName();
+
+        // If the image name is null or empty, return not found
+        if (imageName == null || imageName.trim().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Construct the path to the image
+        Path imagePath = Paths.get(uploadDir, imageName);
+
+        // Check if file exists
+        if (!Files.exists(imagePath)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        // Serve the image content
+        Resource resource = null;
+        try {
+            resource = new UrlResource(imagePath.toUri());
+            if (!resource.exists() || !resource.isReadable()) {
+                throw new RuntimeException("Failed to read the file!");
+            }
+        } catch (MalformedURLException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        String mediaType = "image/jpeg";  // Default to jpeg, adjust based on your need
+        if (imageName.toLowerCase().endsWith(".png")) {
+            mediaType = "image/png";
+        } // You can add more types like GIF, BMP etc.
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(mediaType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
     }
