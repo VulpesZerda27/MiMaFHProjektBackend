@@ -1,4 +1,4 @@
-package com.mima.mimafhprojektbackend.model;
+/*package com.mima.mimafhprojektbackend.model;
 
 
 import jakarta.persistence.*;
@@ -26,4 +26,4 @@ public class ImageData {
     @Column(name = "imagedata",length = 1000)
     private byte[] imageData;
 
-}
+}*/

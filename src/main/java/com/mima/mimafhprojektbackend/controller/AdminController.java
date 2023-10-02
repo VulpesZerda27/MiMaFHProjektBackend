@@ -14,7 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import java.util.List;
 
@@ -121,4 +126,63 @@ public class AdminController {
         return toReturn;
     }
     //endregion
+
+    @RestController
+    @RequestMapping("/product")
+    public class ProductController {
+
+        @Autowired
+        ProductService productService;
+        private static final String uploadDir = "/path/to/your/upload/directory";
+
+        public ProductController(ProductService productService) {
+            this.productService = productService;
+        }
+
+        @PostMapping("/add")
+        public ResponseEntity<Product> addProduct(@RequestParam("productName") String productName,
+                                                  @RequestParam("productPrice") double productPrice,
+                                                  @RequestParam("productDescription") String productDescription,
+                                                  @RequestParam("productQuantity") String productQuantity,
+                                                  @RequestParam("categoryID") Long categoryID,
+                                                  @RequestParam("productImage") MultipartFile imageFile,
+                                                  @RequestParam("imageName") String imageName) {
+
+            Product product = new Product();
+            product.setProductName(productName);
+            product.setProductPrice(productPrice);
+            product.setProductDescription(productDescription);
+
+            // Parse productQuantity to int
+            int quantity = Integer.parseInt(productQuantity);
+            product.setProductQuantity(quantity);
+
+            // Validate categoryID before setting it in the Product object
+
+            // File upload logic
+            String imageUUID;
+            if (!imageFile.isEmpty()) {
+                imageUUID = imageFile.getOriginalFilename();
+                Path fileNameAndPath = Paths.get(uploadDir, imageUUID);
+                try {
+                    Files.write(fileNameAndPath, imageFile.getBytes());
+                } catch (Exception e) {
+                    // Handle file upload exception
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            } else {
+                imageUUID = imageName;
+            }
+            product.setImageName(imageUUID);
+
+            // Handle exceptions properly, this is just an example
+            try {
+                Product newProduct = productService.addProduct(product, categoryID);
+                return new ResponseEntity<>(newProduct, HttpStatus.OK);
+            } catch (Exception e) {
+                // Handle product service exception
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
 }

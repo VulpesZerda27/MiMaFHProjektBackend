@@ -1,4 +1,4 @@
-package com.mima.mimafhprojektbackend.repository;
+/*package com.mima.mimafhprojektbackend.repository;
 
 import com.mima.mimafhprojektbackend.model.ImageData;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,5 +9,5 @@ public interface ImageDataRepository extends JpaRepository<ImageData, Long> {
 
     Optional<ImageData> findByName(String fileName);
 
-}
+}*/
 

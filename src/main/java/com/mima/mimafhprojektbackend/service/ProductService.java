@@ -29,4 +29,16 @@ public class ProductService {
         return productRepository.findById(productId);
     }
 
+    @Transactional
+    public Product addProduct(Product product, Long categoryId) {
+        // Retrieve the category from the database using categoryId
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + categoryId));
+
+        // Set the category for the product
+        product.setCategory(category);
+
+        // Save the product to the database
+        return productRepository.save(product);
+    }
 }

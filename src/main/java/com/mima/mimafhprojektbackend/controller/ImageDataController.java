@@ -1,4 +1,4 @@
-package com.mima.mimafhprojektbackend.controller;
+/*package com.mima.mimafhprojektbackend.controller;
 
 import com.mima.mimafhprojektbackend.service.ImageDataService;
 import lombok.RequiredArgsConstructor;
@@ -39,4 +39,4 @@ public class ImageDataController {
                 .body(imageData);
     }
 
-}
+}*/
