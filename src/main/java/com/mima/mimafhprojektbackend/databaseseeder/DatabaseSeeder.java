@@ -206,6 +206,8 @@ public class DatabaseSeeder implements CommandLineRunner {
                 Author author = bookAuthorRepository.findById(authorId).orElse(null);
                 product.setAuthor(author);
 
+                product.setImageName(fields[7].trim());
+
                 products.add(product);
             }
         }
