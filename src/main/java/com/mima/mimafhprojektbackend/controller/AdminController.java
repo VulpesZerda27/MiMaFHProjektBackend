@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -127,37 +128,12 @@ public class AdminController {
     }
     //endregion
 
-    @RestController
-    @RequestMapping("/product")
-    public class ProductController {
-
-        @Autowired
-        ProductService productService;
         private static final String uploadDir = "/path/to/your/upload/directory";
 
-        public ProductController(ProductService productService) {
-            this.productService = productService;
-        }
-
-        @PostMapping("/add")
-        public ResponseEntity<Product> addProduct(@RequestParam("productName") String productName,
-                                                  @RequestParam("productPrice") double productPrice,
-                                                  @RequestParam("productDescription") String productDescription,
-                                                  @RequestParam("productQuantity") String productQuantity,
-                                                  @RequestParam("categoryID") Long categoryID,
+        @PostMapping("/image/{productId}")
+        public ResponseEntity<Product> addProduct(@PathVariable Long productId,
                                                   @RequestParam("productImage") MultipartFile imageFile,
                                                   @RequestParam("imageName") String imageName) {
-
-            Product product = new Product();
-            product.setProductName(productName);
-            product.setProductPrice(productPrice);
-            product.setProductDescription(productDescription);
-
-            // Parse productQuantity to int
-            int quantity = Integer.parseInt(productQuantity);
-            product.setProductQuantity(quantity);
-
-            // Validate categoryID before setting it in the Product object
 
             // File upload logic
             String imageUUID;
@@ -173,16 +149,22 @@ public class AdminController {
             } else {
                 imageUUID = imageName;
             }
-            product.setImageName(imageUUID);
+
+            Optional<Product> productOptional = productService.getProductById(productId);
+
+            if(productOptional.isPresent()){
+                Product product = productOptional.get();
+                product.setImageName(imageUUID);
 
             // Handle exceptions properly, this is just an example
             try {
-                Product newProduct = productService.addProduct(product, categoryID);
-                return new ResponseEntity<>(newProduct, HttpStatus.OK);
+                Product updatedProduct = adminService.updateProduct(productId, product);
+                return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
             } catch (Exception e) {
                 // Handle product service exception
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }
+            }
+            else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-}

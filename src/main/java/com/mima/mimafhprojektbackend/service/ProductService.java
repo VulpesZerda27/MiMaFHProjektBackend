@@ -1,9 +1,12 @@
 package com.mima.mimafhprojektbackend.service;
 
+import com.mima.mimafhprojektbackend.model.Category;
 import com.mima.mimafhprojektbackend.model.Product;
 import com.mima.mimafhprojektbackend.repository.BookAuthorRepository;
 import com.mima.mimafhprojektbackend.repository.CategoryRepository;
 import com.mima.mimafhprojektbackend.repository.ProductRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
