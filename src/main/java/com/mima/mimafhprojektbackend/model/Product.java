@@ -15,6 +15,7 @@ public class Product {
     @NotBlank
     private String name;
     @NotBlank
+    @Column(columnDefinition = "TEXT")
     private String description;
     @Positive
     private double price;
