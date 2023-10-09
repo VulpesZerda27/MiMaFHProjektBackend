@@ -122,7 +122,8 @@ public class AdminController {
 
     @PutMapping("/user/{userId}")
     public ResponseEntity<MyUser> updateUser(@PathVariable Long userId, @RequestBody @Valid MyUserDTO userDTO) {
-        return new ResponseEntity<>(adminService.updateUser(userId, userDTO), HttpStatus.OK);
+        MyUser myUser = adminService.updateUser(userId, userDTO);
+        return new ResponseEntity<>(myUser, HttpStatus.OK);
     }
 
     @GetMapping("/user")
@@ -132,37 +133,5 @@ public class AdminController {
     }
     //endregion
 
-        @PostMapping("/image/{productId}")
-        public ResponseEntity<Product> addImageToProduct(@PathVariable Long productId,
-                                                  @RequestParam("productImage") MultipartFile imageFile) {
 
-            // File upload logic
-            String uploadDir = "src/main/java/com/mima/mimafhprojektbackend/images";
-            String imageUUID;
-            if (!imageFile.isEmpty()) {
-                imageUUID = imageFile.getOriginalFilename();
-                Path fileNameAndPath = Paths.get(uploadDir, imageUUID);
-                try {
-                    Files.write(fileNameAndPath, imageFile.getBytes());
-                } catch (Exception e) {
-                    // Handle file upload exception
-                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
-            else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-
-            ProductDTO productDetails = new ProductDTO();
-            productDetails.setImageName(imageUUID);
-
-            // Handle exceptions properly, this is just an example
-            try {
-                Product updatedProduct = adminService.updateProduct(productId, productDetails);
-                return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-            } catch (Exception e) {
-                // Handle product service exception
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
     }

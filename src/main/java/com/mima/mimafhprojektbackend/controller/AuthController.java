@@ -20,8 +20,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
-    private final JwtIssuer jwtIssuer;
-    private final AuthenticationManager authenticationManager;
     private final AuthService authService;
     @PostMapping("/auth/login")
     public LoginResponse login(@RequestBody LoginRequest request){

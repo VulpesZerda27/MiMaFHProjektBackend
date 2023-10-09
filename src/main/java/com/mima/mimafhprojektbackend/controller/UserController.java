@@ -1,14 +1,21 @@
 package com.mima.mimafhprojektbackend.controller;
 import com.mima.mimafhprojektbackend.model.MyUser;
+import com.mima.mimafhprojektbackend.security.UserPrincipal;
+import com.mima.mimafhprojektbackend.security.UserPrincipalAuthenticationToken;
 import com.mima.mimafhprojektbackend.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +28,7 @@ public class UserController {
     @GetMapping("/{userid}")
     public ResponseEntity<MyUser> getUserById(@PathVariable Long userid) {
         Optional<MyUser> user = userService.getUserById(userid);
-        if(user != null){
+        if (user != null) {
             return new ResponseEntity<>(user.get(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -36,15 +43,27 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<MyUser> deleteUserById(@PathVariable Long userId) {
-        Optional<MyUser> deletedUser = userService.deleteUserById(userId);
-
-        if(deletedUser != null) return new ResponseEntity<>(deletedUser.get(), HttpStatus.OK);
-        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    // A helper method to extract the email claim from the Authentication object
-    private String getEmailFromToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName(); // getUsername() returns the email for your UserPrincipal
+
+        boolean hasUserRole = authentication.getAuthorities().stream()
+                .anyMatch(authority ->
+                        authority instanceof SimpleGrantedAuthority &&
+                                "USER".equals(authority.getAuthority())
+                );
+
+        if (!hasUserRole) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        if (!userPrincipal.getUserId().equals(userId)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+        try {
+            userService.deleteUserById(userId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

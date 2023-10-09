@@ -1,38 +1,42 @@
-/*package com.mima.mimafhprojektbackend.service;
+package com.mima.mimafhprojektbackend.service;
 
-import com.mima.mimafhprojektbackend.model.ImageData;
-import com.mima.mimafhprojektbackend.repository.ImageDataRepository;
-import com.mima.mimafhprojektbackend.util.ImageDataUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.util.Optional;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
+@RequiredArgsConstructor
 public class ImageDataService {
+    private final String uploadDir = "src/main/java/com/mima/mimafhprojektbackend/images";
+    public String uploadImage(MultipartFile imageFile) throws IOException {
+        String imageUUID;
 
-    @Autowired
-    private ImageDataRepository repository;
+        imageUUID = imageFile.getOriginalFilename();
+        Path fileNameAndPath = Paths.get(uploadDir, imageUUID);
 
-//    Store and retrieve image from DB
-    public  String uploadImage(MultipartFile file) throws IOException {
+        Files.write(fileNameAndPath, imageFile.getBytes());
 
-        ImageData imageData = repository.save(ImageData.builder()
-                .name(file.getOriginalFilename())
-                .type(file.getContentType())
-                .imageData(ImageDataUtils.compressImage(file.getBytes())).build());
-        if(imageData !=null){
-            return "file uploaded successfully : " +file.getOriginalFilename();
+        return imageUUID;
+    }
+
+    public Resource downloadImage(Path imagePath) throws MalformedURLException {
+        Resource resource = new UrlResource(imagePath.toUri());
+        if (!resource.exists() || !resource.isReadable()) {
+            throw new RuntimeException("Failed to read the file!");
         }
-        return null;
+        return resource;
     }
 
-    public byte[] downloadImage(String fileName){
-        Optional<ImageData> dbImageData = repository.findByName(fileName);
-        byte[] images=ImageDataUtils.decompressImage(dbImageData.get().getImageData());
-        return images;
+    public Path getImagePath(String imageName) {
+        return Paths.get(uploadDir, imageName);
     }
-
-}*/
+}

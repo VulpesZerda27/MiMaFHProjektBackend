@@ -60,41 +60,16 @@ public class AdminService {
     public Product saveProduct(ProductDTO productDetails) {
         Product product = new Product();
 
-        if(productDetails.getDescription() != null) {
-            product.setDescription(productDetails.getDescription());
-        }
-        if(productDetails.getName() != null) {
-            product.setName(productDetails.getName());
-        }
-        if(productDetails.getPrice() != 0) {
-            product.setPrice(productDetails.getPrice());
-        }
-        if(productDetails.getQuantity() != 0) {
-            product.setQuantity(productDetails.getQuantity());
-        }
-        if(productDetails.getImageName() != null){
-            product.setImageName(productDetails.getImageName());
-        }
-        if(productDetails.getCategory() != null){
-            Optional<Category> category = categoryRepository.getCategoryByName(productDetails.getCategory());
-            if(category.isPresent()){
-                product.setCategory(category.get());
-            }
-        }
-        if(productDetails.getAuthor() != null){
-            String[] authorname = productDetails.getAuthor().split(" ");
-            Optional<Author> author = bookAuthorRepository.getAuthorByFirstNameAndLastName(authorname[0],  authorname[1]);
-            if(author.isPresent()){
-                product.setAuthor(author.get());
-            }
-        }
-
-        return productRepository.save(product);
+        return setProductDetails(productDetails, product);
     }
 
     public Product updateProduct(Long productId, ProductDTO productDetails) {
         Product product = productRepository.findById(productId).orElseThrow();
 
+        return setProductDetails(productDetails, product);
+    }
+
+    private Product setProductDetails(ProductDTO productDetails, Product product) {
         if(productDetails.getDescription() != null) {
             product.setDescription(productDetails.getDescription());
         }

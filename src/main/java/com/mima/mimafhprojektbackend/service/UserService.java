@@ -3,9 +3,11 @@ import com.mima.mimafhprojektbackend.exceptions.EmailAlreadyRegisteredException;
 import com.mima.mimafhprojektbackend.model.MyUser;
 import com.mima.mimafhprojektbackend.model.ShoppingBasket;
 import com.mima.mimafhprojektbackend.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -35,9 +37,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public Optional<MyUser> deleteUserById(Long userId) {
+    public void deleteUserById(Long userId) throws EntityNotFoundException {
         Optional<MyUser> toDelete = getUserById(userId);
-        if(toDelete != null) userRepository.deleteById(userId);
-        return toDelete;
+        if(toDelete.isPresent()) userRepository.deleteById(userId);
+        else throw new EntityNotFoundException();
     }
 }
