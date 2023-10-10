@@ -17,7 +17,7 @@ public class CustomUserDetailService implements UserDetailsService {
     private final UserService userService;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var user = userService.getUserByEmail(username).orElseThrow();
+        var user = userService.getUserByEmail(username);
         var userRoles = user.getRoles();
         List<SimpleGrantedAuthority> userAuthorities = new ArrayList<>();
 

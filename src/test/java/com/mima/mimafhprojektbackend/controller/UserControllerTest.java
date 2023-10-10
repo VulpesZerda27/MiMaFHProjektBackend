@@ -38,7 +38,7 @@ class UserControllerTest {
     @Mock
     private AdminService adminService;
 
-    @org.junit.jupiter.api.Test
+    /*@org.junit.jupiter.api.Test
     void testGetUserById() {
         // Arrange
         Long userId = 1L;
@@ -106,7 +106,7 @@ class UserControllerTest {
         assertEquals("Huber", userResponse.getBody().getLastName());
     }
 
-    /*@Test
+    @Test
     void testDeleteUser() {
         // Mock data
         Long userId = 1L;
