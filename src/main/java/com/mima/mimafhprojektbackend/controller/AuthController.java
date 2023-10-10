@@ -25,9 +25,4 @@ public class AuthController {
     public LoginResponse login(@RequestBody LoginRequest request){
         return authService.authenticateLogin(request.getEmail(), request.getPassword());
     }
-
-    @GetMapping("/securityTest")
-    public String securityTest(){
-        return "It worked!";
-    }
 }

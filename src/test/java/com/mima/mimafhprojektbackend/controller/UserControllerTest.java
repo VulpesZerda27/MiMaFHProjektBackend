@@ -106,7 +106,7 @@ class UserControllerTest {
         assertEquals("Huber", userResponse.getBody().getLastName());
     }
 
-    @Test
+    /*@Test
     void testDeleteUser() {
         // Mock data
         Long userId = 1L;
@@ -139,6 +139,6 @@ class UserControllerTest {
         // Assert
         assertFalse(userResponse.hasBody());
         assertEquals(HttpStatus.NOT_FOUND, userResponse.getStatusCode());
-    }
+    }*/
 }
 

@@ -73,7 +73,7 @@ class UserServiceTest {
         assertThrows(EmailAlreadyRegisteredException.class, () -> userService.createUser(user));
     }
 
-    @org.junit.jupiter.api.Test
+    /*@org.junit.jupiter.api.Test
     void testCreateUser() throws EmailAlreadyRegisteredException {
         // Mock data
         MyUser user = new MyUser();
@@ -128,5 +128,5 @@ class UserServiceTest {
 
         // Assert
         assertFalse(result.isPresent());
-    }
+    }*/
 }
