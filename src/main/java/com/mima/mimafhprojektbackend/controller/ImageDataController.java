@@ -36,12 +36,8 @@ public class ImageDataController {
 
     @GetMapping("/{productId}")
     public ResponseEntity<Resource> downloadProductImage(@PathVariable Long productId) {
-        Optional<Product> productOptional = productService.getProductById(productId);
-        if (!productOptional.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Product product = productService.getProductById(productId);
 
-        Product product = productOptional.get();
         String imageName = product.getImageName();
 
         if (imageName == null || imageName.trim().isEmpty()) {

@@ -18,10 +18,12 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public Optional<MyUser> getUserById(Long userId) {
-        return userRepository.findById(userId);
+    public MyUser getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow();
     }
-    public Optional<MyUser> getUserByEmail(String email) {return userRepository.getMyUserByEmail(email);}
+    public MyUser getUserByEmail(String email) {
+        return userRepository.getMyUserByEmail(email).orElseThrow();
+    }
     public MyUser createUser(MyUser user) throws EmailAlreadyRegisteredException {
         Optional<MyUser> optionalMyUser = userRepository.getMyUserByEmail(user.getEmail());
 
@@ -38,9 +40,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void deleteUserById(Long userId) throws EntityNotFoundException {
-        Optional<MyUser> toDelete = getUserById(userId);
-        if(toDelete.isPresent()) userRepository.deleteById(userId);
-        else throw new EntityNotFoundException();
+    public void deleteUserById(Long userId) {
+        userRepository.findById(userId).orElseThrow();
+        userRepository.deleteById(userId);
     }
 }

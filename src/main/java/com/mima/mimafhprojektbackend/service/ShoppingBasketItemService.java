@@ -1,27 +1,24 @@
 package com.mima.mimafhprojektbackend.service;
 import com.mima.mimafhprojektbackend.model.ShoppingBasketItem;
 import com.mima.mimafhprojektbackend.repository.ShoppingBasketItemRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ShoppingBasketItemService {
 
     private final ShoppingBasketItemRepository shoppingBasketItemRepository;
-
-    public ShoppingBasketItemService(ShoppingBasketItemRepository shoppingBasketItemRepository){
-        this.shoppingBasketItemRepository = shoppingBasketItemRepository;
-    }
-
 
     public List<ShoppingBasketItem> GetAllShoppingBasketItems() {
         return shoppingBasketItemRepository.findAll();
     }
 
-    public Optional<ShoppingBasketItem> getShoppingBasketItemById(Long shoppingBasketItemId) {
-        return shoppingBasketItemRepository.findById(shoppingBasketItemId);
+    public ShoppingBasketItem getShoppingBasketItemById(Long shoppingBasketItemId) {
+        return shoppingBasketItemRepository.findById(shoppingBasketItemId).orElseThrow();
     }
 
     public ShoppingBasketItem addShoppingBasketItem(ShoppingBasketItem shoppingBasketItem) {
@@ -35,6 +32,7 @@ public class ShoppingBasketItemService {
     }
 
     public void deleteShoppingBasketItemById(Long shoppingBasketItemId) {
+        shoppingBasketItemRepository.findById(shoppingBasketItemId).orElseThrow();
         shoppingBasketItemRepository.deleteById(shoppingBasketItemId);
     }
 }

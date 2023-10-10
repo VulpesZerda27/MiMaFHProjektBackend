@@ -3,6 +3,8 @@ package com.mima.mimafhprojektbackend.controller;
 import com.mima.mimafhprojektbackend.model.Author;
 import com.mima.mimafhprojektbackend.service.BookAuthorService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +23,7 @@ public class BookAuthorController {
     }
 
     @GetMapping("/{bookAuthorId}")
-    public Optional<Author> getBookAuthorById(@PathVariable Long bookAuthorId) {
+    public Author getBookAuthorById(@PathVariable Long bookAuthorId) {
         return bookAuthorService.getBookAuthorById(bookAuthorId);
     }
 }

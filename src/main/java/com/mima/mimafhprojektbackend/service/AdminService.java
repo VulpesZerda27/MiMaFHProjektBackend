@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -38,6 +39,7 @@ public class AdminService {
     }
 
     public void deleteBookAuthorById(Long bookAuthorId) {
+        bookAuthorRepository.findById(bookAuthorId).orElseThrow();
         bookAuthorRepository.deleteById(bookAuthorId);
     }
 
@@ -53,19 +55,17 @@ public class AdminService {
     }
 
     public void deleteCategoryById(Long categoryId) {
+        categoryRepository.findById(categoryId).orElseThrow();
         categoryRepository.deleteById(categoryId);
     }
 
-    @Transactional
     public Product saveProduct(ProductDTO productDetails) {
         Product product = new Product();
-
         return setProductDetails(productDetails, product);
     }
 
-    public Product updateProduct(Long productId, ProductDTO productDetails) {
+    public Product updateProduct(Long productId, ProductDTO productDetails) throws NoSuchElementException {
         Product product = productRepository.findById(productId).orElseThrow();
-
         return setProductDetails(productDetails, product);
     }
 
@@ -104,11 +104,15 @@ public class AdminService {
 
 
     public void deleteProductById(Long productId) {
+        productRepository.findById(productId).orElseThrow();
         productRepository.deleteById(productId);
     }
 
-    public void deleteUserById(Long userId) { userRepository.deleteById(userId); }
-    public List<MyUser> GetAllUsers() {
+    public void deleteUserById(Long userId) {
+        userRepository.findById(userId).orElseThrow();
+        userRepository.deleteById(userId);
+    }
+    public List<MyUser> getAllUsers() {
         return userRepository.findAll();
     }
 

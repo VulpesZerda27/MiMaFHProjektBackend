@@ -4,6 +4,8 @@ import com.mima.mimafhprojektbackend.model.Category;
 import com.mima.mimafhprojektbackend.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +26,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    public Optional<Category> getCategoryById(@PathVariable Long categoryId) {
+    public Category getCategoryById(@PathVariable Long categoryId) {
         return categoryService.getCategoryById(categoryId);
     }
 }

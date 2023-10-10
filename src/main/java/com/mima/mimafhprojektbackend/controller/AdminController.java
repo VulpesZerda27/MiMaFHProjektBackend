@@ -12,24 +12,12 @@ import com.mima.mimafhprojektbackend.service.CategoryService;
 import com.mima.mimafhprojektbackend.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.net.MalformedURLException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,8 +36,9 @@ public class AdminController {
     }
 
     @PostMapping("/bookAuthor")
-    public Author createCategory(@RequestBody @Valid Author author) {
-        return adminService.createBookAuthor(author);
+    public ResponseEntity<Author> createBookAuthor(@RequestBody @Valid Author author) {
+        Author createdAuthor = adminService.createBookAuthor(author);
+        return new ResponseEntity<>(createdAuthor, HttpStatus.CREATED);
     }
 
     @PutMapping("/bookAuthor/{bookAuthorId}")
@@ -58,41 +47,40 @@ public class AdminController {
     }
 
     @DeleteMapping("/bookAuthor/{bookAuthorId}")
-    public void deleteBookAuthorById(@PathVariable Long bookAuthorId) {
+    public ResponseEntity<Void> deleteBookAuthorById(@PathVariable Long bookAuthorId) {
         adminService.deleteBookAuthorById(bookAuthorId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    //endregion
+//endregion
 
     //region Category methods
-
     @GetMapping("/category")
     public List<Category> getAllCategories() {
         return categoryService.getAllCategories();
     }
 
     @PostMapping("/category")
-    public Category createCategory(@RequestBody @Valid Category category) {
-        return adminService.createCategory(category);
+    public ResponseEntity<Category> createCategory(@RequestBody @Valid Category category) {
+        Category createdCategory = adminService.createCategory(category);
+        return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
     }
-
 
     @PutMapping("/category/{categoryId}")
     public Category updateCategory(@PathVariable Long categoryId, @RequestBody @Valid Category categoryDetails) {
         return adminService.updateCategory(categoryId, categoryDetails);
     }
 
-
     @DeleteMapping("/category/{categoryId}")
-    public void deleteCategoryById(@PathVariable Long categoryId) {
+    public ResponseEntity<Void> deleteCategoryById(@PathVariable Long categoryId) {
         adminService.deleteCategoryById(categoryId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-    //endregion
+//endregion
 
     //region Product methods
-
     @GetMapping("/product")
-    public List<Product> GetAllProducts() {
-        return productService.GetAllProducts();
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
     }
 
     @PutMapping("/product/{productId}")
@@ -101,37 +89,34 @@ public class AdminController {
     }
 
     @DeleteMapping("/product/{productId}")
-    public void deleteProductById(@PathVariable Long productId) {
+    public ResponseEntity<Void> deleteProductById(@PathVariable Long productId) {
         adminService.deleteProductById(productId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-
 
     @PostMapping("/product")
-    public Product saveProduct(@RequestBody @Valid ProductDTO productDetails) {
-        return adminService.saveProduct(productDetails);
+    public ResponseEntity<Product> saveProduct(@RequestBody @Valid ProductDTO productDetails) {
+        Product savedProduct = adminService.saveProduct(productDetails);
+        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
-
-    //endregion
+//endregion
 
     //region User methods
-
     @DeleteMapping("/user/{userId}")
-    public void deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         adminService.deleteUserById(userId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/user/{userId}")
-    public ResponseEntity<MyUser> updateUser(@PathVariable Long userId, @RequestBody @Valid MyUserDTO userDTO) {
-        MyUser myUser = adminService.updateUser(userId, userDTO);
-        return new ResponseEntity<>(myUser, HttpStatus.OK);
+    public MyUser updateUser(@PathVariable Long userId, @RequestBody @Valid MyUserDTO userDTO) {
+        return adminService.updateUser(userId, userDTO);
     }
 
     @GetMapping("/user")
-    public @ResponseBody List<MyUser> GetAllUsers() {
-        List<MyUser> toReturn = adminService.GetAllUsers();
-        return toReturn;
+    public List<MyUser> getAllUsers() {
+        return adminService.getAllUsers();
     }
-    //endregion
+//endregion
 
-
-    }
+}

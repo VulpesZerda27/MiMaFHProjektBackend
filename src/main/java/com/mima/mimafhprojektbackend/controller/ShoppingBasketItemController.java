@@ -5,6 +5,7 @@ import com.mima.mimafhprojektbackend.model.ShoppingBasketItem;
 import com.mima.mimafhprojektbackend.service.ShoppingBasketItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class ShoppingBasketItemController {
         return shoppingBasketItemService.GetAllShoppingBasketItems();
     }
     @GetMapping("/{shoppingBasketItemId}")
-    public Optional<ShoppingBasketItem> getShoppingBasketItemById(@PathVariable Long shoppingBasketItemId) {
+    public ShoppingBasketItem getShoppingBasketItemById(@PathVariable Long shoppingBasketItemId) {
         return shoppingBasketItemService.getShoppingBasketItemById(shoppingBasketItemId);
     }
     @PostMapping

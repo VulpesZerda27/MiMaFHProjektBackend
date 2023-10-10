@@ -26,13 +26,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/{userid}")
-    public ResponseEntity<MyUser> getUserById(@PathVariable Long userid) {
-        Optional<MyUser> user = userService.getUserById(userid);
-        if (user != null) {
-            return new ResponseEntity<>(user.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public MyUser getUserById(@PathVariable Long userid) {
+        return userService.getUserById(userid);
     }
 
     @PostMapping
@@ -42,7 +37,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<MyUser> deleteUserById(@PathVariable Long userId) {
+    public ResponseEntity<Void> deleteUserById(@PathVariable Long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         boolean hasUserRole = authentication.getAuthorities().stream()
@@ -58,12 +53,10 @@ public class UserController {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         if (!userPrincipal.getUserId().equals(userId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-        try {
+        } else {
             userService.deleteUserById(userId);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
         }
     }
-}
+    }

@@ -5,6 +5,8 @@ import com.mima.mimafhprojektbackend.model.ShoppingBasket;
 import com.mima.mimafhprojektbackend.service.ShoppingBasketService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,18 +25,7 @@ public class ShoppingBasketController
         return shoppingBasketService.GetAllShoppingBaskets();
     }
     @GetMapping("/{shoppingBasketId}")
-    public Optional<ShoppingBasket> getShoppingBasketById(@PathVariable Long shoppingBasketId) {
+    public ShoppingBasket getShoppingBasketById(@PathVariable Long shoppingBasketId) {
         return shoppingBasketService.getShoppingBasketById(shoppingBasketId);
-    }
-
-    @PostMapping
-    public ShoppingBasket createShoppingBasket(@RequestBody @Valid ShoppingBasket shoppingBasket) {
-        return shoppingBasketService.createShoppingBasket(shoppingBasket);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @DeleteMapping("/{shoppingBasketId}")
-    public void deleteShoppingBasketById(@PathVariable Long shoppingBasketId) {
-        shoppingBasketService.deleteShoppingBasketById(shoppingBasketId);
     }
 }
