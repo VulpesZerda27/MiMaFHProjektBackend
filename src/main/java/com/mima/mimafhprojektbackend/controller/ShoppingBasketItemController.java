@@ -1,6 +1,7 @@
 package com.mima.mimafhprojektbackend.controller;
 
 
+import com.mima.mimafhprojektbackend.dto.ShoppingBasketItemDTO;
 import com.mima.mimafhprojektbackend.model.ShoppingBasketItem;
 import com.mima.mimafhprojektbackend.service.ShoppingBasketItemService;
 import jakarta.validation.Valid;
@@ -32,8 +33,8 @@ public class ShoppingBasketItemController {
     }
 
     @PutMapping("/{shoppingBasketItemId}")
-    public ShoppingBasketItem updateShoppingBasketItem(@PathVariable Long shoppingBasketItemId, @RequestBody @Valid ShoppingBasketItem shoppingBasketItemDetails) {
-        return shoppingBasketItemService.updateShoppingBasketItem(shoppingBasketItemId, shoppingBasketItemDetails);
+    public ShoppingBasketItem updateShoppingBasketItem(@PathVariable Long shoppingBasketItemId, @RequestBody @Valid ShoppingBasketItemDTO shoppingBasketItemDTO) {
+        return shoppingBasketItemService.updateShoppingBasketItem(shoppingBasketItemId, shoppingBasketItemDTO);
     }
 
     @DeleteMapping("/{shoppingBasketItemId}")

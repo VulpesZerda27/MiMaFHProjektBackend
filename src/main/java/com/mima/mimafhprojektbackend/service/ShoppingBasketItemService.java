@@ -1,4 +1,5 @@
 package com.mima.mimafhprojektbackend.service;
+import com.mima.mimafhprojektbackend.dto.ShoppingBasketItemDTO;
 import com.mima.mimafhprojektbackend.model.ShoppingBasketItem;
 import com.mima.mimafhprojektbackend.repository.ShoppingBasketItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +26,9 @@ public class ShoppingBasketItemService {
         return shoppingBasketItemRepository.save(shoppingBasketItem);
     }
 
-    public ShoppingBasketItem updateShoppingBasketItem(Long shoppingBasketItemId, ShoppingBasketItem shoppingBasketItemDetails) {
+    public ShoppingBasketItem updateShoppingBasketItem(Long shoppingBasketItemId, ShoppingBasketItemDTO shoppingBasketItemDTO) {
         ShoppingBasketItem shoppingBasketItem = shoppingBasketItemRepository.findById(shoppingBasketItemId).orElseThrow();
-        shoppingBasketItem.setQuantity(shoppingBasketItemDetails.getQuantity());
+        shoppingBasketItem.setQuantity(shoppingBasketItemDTO.getQuantity());
         return shoppingBasketItemRepository.save(shoppingBasketItem);
     }
 

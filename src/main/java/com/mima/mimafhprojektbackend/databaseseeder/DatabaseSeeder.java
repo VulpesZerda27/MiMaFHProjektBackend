@@ -99,7 +99,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 String[] fields = line.split(",");
                 ShoppingBasketItem item = new ShoppingBasketItem();
                 item.setId(Long.parseLong(fields[0].trim()));
-                item.setQuantity(Integer.parseInt(fields[1].trim()));
+                item.setQuantity(Long.parseLong(fields[1].trim()));
 
                 // Linking to ShoppingBasket
                 Long basketId = Long.parseLong(fields[2].trim());

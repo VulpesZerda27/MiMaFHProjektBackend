@@ -36,19 +36,10 @@ public class UserController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAuthority('USER')")
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUserById(@PathVariable Long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        boolean hasUserRole = authentication.getAuthorities().stream()
-                .anyMatch(authority ->
-                        authority instanceof SimpleGrantedAuthority &&
-                                "USER".equals(authority.getAuthority())
-                );
-
-        if (!hasUserRole) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
 
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         if (!userPrincipal.getUserId().equals(userId)) {
@@ -56,7 +47,6 @@ public class UserController {
         } else {
             userService.deleteUserById(userId);
             return new ResponseEntity<>(HttpStatus.OK);
-
         }
     }
     }

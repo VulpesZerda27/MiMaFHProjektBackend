@@ -14,7 +14,7 @@ public class ShoppingBasketItem {
     @GeneratedValue
     private Long id;
     @PositiveOrZero
-    private int quantity;
+    private Long quantity;
 
     @ManyToOne
     @JoinColumn(name = "shopping_basket_id")
