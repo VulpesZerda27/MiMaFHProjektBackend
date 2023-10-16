@@ -14,19 +14,16 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/shoppingbasketItems")
+@RequestMapping("/basketItem")
 public class ShoppingBasketItemController {
 
     private final ShoppingBasketItemService  shoppingBasketItemService;
 
-    @GetMapping
-    public List<ShoppingBasketItem> GetAllShoppingBasketItems() {
-        return shoppingBasketItemService.GetAllShoppingBasketItems();
+    @GetMapping("/{userId}")
+    public List<ShoppingBasketItem> GetAllShoppingBasketItemsOfUser(@PathVariable Long userId) {
+        return shoppingBasketItemService.getShoppingBasketItemByUserId(userId);
     }
-    @GetMapping("/{shoppingBasketItemId}")
-    public ShoppingBasketItem getShoppingBasketItemById(@PathVariable Long shoppingBasketItemId) {
-        return shoppingBasketItemService.getShoppingBasketItemById(shoppingBasketItemId);
-    }
+
     @PostMapping
     public ShoppingBasketItem addShoppingBasketItem(ShoppingBasketItem shoppingBasketItem) {
         return shoppingBasketItemService.addShoppingBasketItem(shoppingBasketItem);

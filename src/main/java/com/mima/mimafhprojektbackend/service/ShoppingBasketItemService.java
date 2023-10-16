@@ -2,6 +2,7 @@ package com.mima.mimafhprojektbackend.service;
 import com.mima.mimafhprojektbackend.dto.ShoppingBasketItemDTO;
 import com.mima.mimafhprojektbackend.model.ShoppingBasketItem;
 import com.mima.mimafhprojektbackend.repository.ShoppingBasketItemRepository;
+import com.mima.mimafhprojektbackend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,13 +14,15 @@ import java.util.Optional;
 public class ShoppingBasketItemService {
 
     private final ShoppingBasketItemRepository shoppingBasketItemRepository;
+    private final UserRepository userRepository;
 
     public List<ShoppingBasketItem> GetAllShoppingBasketItems() {
         return shoppingBasketItemRepository.findAll();
     }
 
-    public ShoppingBasketItem getShoppingBasketItemById(Long shoppingBasketItemId) {
-        return shoppingBasketItemRepository.findById(shoppingBasketItemId).orElseThrow();
+    public List<ShoppingBasketItem> getShoppingBasketItemByUserId(Long userId) {
+        Long shoppingBasketId = userRepository.findShoppingBasketIdByUserId(userId).orElseThrow();
+        return shoppingBasketItemRepository.findByShoppingBasketId(shoppingBasketId);
     }
 
     public ShoppingBasketItem addShoppingBasketItem(ShoppingBasketItem shoppingBasketItem) {
