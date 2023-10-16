@@ -25,6 +25,10 @@ public class ShoppingBasketItemService {
         return shoppingBasketItemRepository.findByShoppingBasketId(shoppingBasketId);
     }
 
+    public List<ShoppingBasketItem> getShoppingBasketItemByUserIdAndBasketId(Long productId, Long basketId){
+        return shoppingBasketItemRepository.findShoppingBasketItemsByProductIdAndBasketId(productId, basketId);
+    }
+
     public ShoppingBasketItem addShoppingBasketItem(ShoppingBasketItem shoppingBasketItem) {
         return shoppingBasketItemRepository.save(shoppingBasketItem);
     }
