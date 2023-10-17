@@ -40,6 +40,8 @@ public class DatabaseSeeder implements CommandLineRunner {
     @Autowired
     private ShoppingBasketItemRepository shoppingBasketItemRepository;
 
+    private List<ShoppingBasket> shoppingBaskets = new ArrayList<>();
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseSeeder.class);
 
     @Override
@@ -57,6 +59,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         // Populate MyUsers
         List<MyUser> users = loadMyUsersFromCSV("/data/my_user.csv");
+        shoppingBasketRepository.saveAll(shoppingBaskets);
         myUserRepository.saveAll(users);
 
         // Populate Products
@@ -72,22 +75,6 @@ public class DatabaseSeeder implements CommandLineRunner {
         shoppingBasketItemRepository.saveAll(items);
 
         LOGGER.info("Data seeding complete.");
-    }
-
-    private List<ShoppingBasket> loadShoppingBasketsFromCSV(String fileName) throws Exception {
-        List<ShoppingBasket> baskets = new ArrayList<>();
-        Resource resource = new ClassPathResource(fileName);  // Use ClassPathResource to load the CSV
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] fields = line.split(",");
-                ShoppingBasket basket = new ShoppingBasket();
-                basket.setId(Long.parseLong(fields[0].trim()));
-                // Logic to link to MyUser can be added here.
-                baskets.add(basket);
-            }
-        }
-        return baskets;
     }
 
     private List<ShoppingBasketItem> loadShoppingBasketItemsFromCSV(String fileName) throws Exception {
@@ -173,6 +160,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
                 // Create a new ShoppingBasket for the user and set it
                 ShoppingBasket basket = new ShoppingBasket();
+                shoppingBaskets.add(basket);
                 user.setShoppingBasket(basket);   // this will also set the user for the basket because of the bidirectional association
                 user.setEnabled(true);
                 users.add(user);

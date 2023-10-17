@@ -47,26 +47,32 @@ public class UserController {
 
     @PostMapping("/basket/{userId}/{productId}")
     public ResponseEntity<ShoppingBasket> addItemToUserBasket(@PathVariable Long userId, @PathVariable Long productId) {
-        MyUser user = userService.getUserById(userId);
-        ShoppingBasket shoppingBasket = user.getShoppingBasket();
-        List<ShoppingBasketItem> shoppingBasketItemList = shoppingBasketItemService.getShoppingBasketItemByUserIdAndBasketId(productId, shoppingBasket.getId());
-        if(shoppingBasketItemList.isEmpty()) {
-            ShoppingBasketItem shoppingBasketItem = new ShoppingBasketItem();
-            shoppingBasketItem.setQuantity(1L);
-            Product product = productService.getProductById(productId);
-            shoppingBasketItem.setProduct(product);
-            shoppingBasketItem.setShoppingBasket(shoppingBasket);
-            List<ShoppingBasketItem> shoppingBasketItems = shoppingBasket.getShoppingBasketItems();
-            shoppingBasketItems.add(shoppingBasketItem);
-            shoppingBasket.setShoppingBasketItems(shoppingBasketItems);
-            shoppingBasketService.createShoppingBasket(shoppingBasket);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        if (!userPrincipal.getUserId().equals(userId)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } else {
+            MyUser user = userService.getUserById(userId);
+            ShoppingBasket shoppingBasket = user.getShoppingBasket();
+            List<ShoppingBasketItem> shoppingBasketItemList = shoppingBasketItemService.getShoppingBasketItemByUserIdAndBasketId(productId, shoppingBasket.getId());
+            if (shoppingBasketItemList.isEmpty()) {
+                ShoppingBasketItem shoppingBasketItem = new ShoppingBasketItem();
+                shoppingBasketItem.setQuantity(1L);
+                Product product = productService.getProductById(productId);
+                shoppingBasketItem.setProduct(product);
+                shoppingBasketItem.setShoppingBasket(shoppingBasket);
+                List<ShoppingBasketItem> shoppingBasketItems = shoppingBasket.getShoppingBasketItems();
+                shoppingBasketItems.add(shoppingBasketItem);
+                shoppingBasket.setShoppingBasketItems(shoppingBasketItems);
+                shoppingBasketService.createShoppingBasket(shoppingBasket);
+            } else {
+                ShoppingBasketItem shoppingBasketItem = shoppingBasketItemList.get(0);
+                shoppingBasketItem.setQuantity(shoppingBasketItem.getQuantity() + 1);
+                shoppingBasketItemService.addShoppingBasketItem(shoppingBasketItem);
+            }
+            return new ResponseEntity<>(shoppingBasket, HttpStatus.OK);
         }
-        else{
-            ShoppingBasketItem shoppingBasketItem = shoppingBasketItemList.get(0);
-            shoppingBasketItem.setQuantity(shoppingBasketItem.getQuantity() + 1);
-            shoppingBasketItemService.addShoppingBasketItem(shoppingBasketItem);
-        }
-        return new ResponseEntity<>(shoppingBasket, HttpStatus.OK);
     }
     @PreAuthorize("hasAuthority('USER')")
     @DeleteMapping("/{userId}")

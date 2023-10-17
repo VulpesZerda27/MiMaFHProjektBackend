@@ -12,4 +12,7 @@ public interface UserRepository extends JpaRepository<MyUser, Long> {
     public Optional<MyUser> getMyUserByEmail(@Email String userEmail);
     @Query("SELECT u.shoppingBasket.id FROM MyUser u WHERE u.id = :userId")
     Optional<Long> findShoppingBasketIdByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT u FROM MyUser u WHERE u.shoppingBasket.id = :basketId")
+    Optional<MyUser> findUserByShoppingBasketId(@Param("basketId") Long basketId);
 }

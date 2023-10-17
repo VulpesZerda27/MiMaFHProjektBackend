@@ -40,6 +40,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public MyUser getUserByShoppingBasketId(Long basketId){
+        return userRepository.findUserByShoppingBasketId(basketId).orElseThrow();
+    }
+
     public void deleteUserById(Long userId) {
         userRepository.findById(userId).orElseThrow();
         userRepository.deleteById(userId);

@@ -25,19 +25,14 @@ public class Product {
     private double price;
     @PositiveOrZero
     private int quantity;
-
     private String imageName;
-
     @ManyToOne
     @JoinColumn(name="category_id")
     private Category category;
-
     @ManyToOne
     @JoinColumn(name = "author_id")
     private Author author;
-
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<ShoppingBasketItem> shoppingBasketItems = new ArrayList<>();
-
 }
