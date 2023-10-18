@@ -13,11 +13,15 @@ public class ShoppingBasketItem {
     @Id
     @GeneratedValue
     private Long id;
+
     @PositiveOrZero
     private Long quantity;
+
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "shopping_basket_id")
     private ShoppingBasket shoppingBasket;
+
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

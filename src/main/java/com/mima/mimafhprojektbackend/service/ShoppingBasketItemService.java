@@ -1,5 +1,6 @@
 package com.mima.mimafhprojektbackend.service;
 import com.mima.mimafhprojektbackend.dto.ShoppingBasketItemDTO;
+import com.mima.mimafhprojektbackend.model.MyUser;
 import com.mima.mimafhprojektbackend.model.ShoppingBasketItem;
 import com.mima.mimafhprojektbackend.repository.ShoppingBasketItemRepository;
 import com.mima.mimafhprojektbackend.repository.UserRepository;
@@ -7,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,17 +20,13 @@ public class ShoppingBasketItemService {
         return shoppingBasketItemRepository.findAll();
     }
 
-    public List<ShoppingBasketItem> getShoppingBasketItemByUserId(Long userId) {
-        Long shoppingBasketId = userRepository.findShoppingBasketIdByUserId(userId).orElseThrow();
-        return shoppingBasketItemRepository.findByShoppingBasketId(shoppingBasketId);
+    public List<ShoppingBasketItem> getShoppingBasketItemsByUserId(Long userId) {
+        MyUser user = userRepository.findById(userId).orElseThrow();
+        return user.getShoppingBasket().getShoppingBasketItems();
     }
 
     public ShoppingBasketItem getShoppingBasketItemById(Long basketItemId) {
         return shoppingBasketItemRepository.findById(basketItemId).orElseThrow();
-    }
-
-    public List<ShoppingBasketItem> getShoppingBasketItemByUserIdAndBasketId(Long productId, Long basketId){
-        return shoppingBasketItemRepository.findShoppingBasketItemsByProductIdAndBasketId(productId, basketId);
     }
 
     public ShoppingBasketItem addShoppingBasketItem(ShoppingBasketItem shoppingBasketItem) {

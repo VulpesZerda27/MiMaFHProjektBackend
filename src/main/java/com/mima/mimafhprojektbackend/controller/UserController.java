@@ -24,15 +24,13 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
-    private final ProductService productService;
-    private final ShoppingBasketService shoppingBasketService;
-    private final ShoppingBasketItemService shoppingBasketItemService;
 
     @GetMapping("/{userid}")
     public MyUser getUserById(@PathVariable Long userid) {
@@ -46,39 +44,20 @@ public class UserController {
     }
 
     @PostMapping("/basket/{userId}/{productId}")
-    public ResponseEntity<ShoppingBasket> addItemToUserBasket(@PathVariable Long userId, @PathVariable Long productId) {
+    public ResponseEntity<ShoppingBasketItem> addItemToUserBasket(@PathVariable Long userId, @PathVariable Long productId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         if (!userPrincipal.getUserId().equals(userId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
-            MyUser user = userService.getUserById(userId);
-            ShoppingBasket shoppingBasket = user.getShoppingBasket();
-            List<ShoppingBasketItem> shoppingBasketItemList = shoppingBasketItemService.getShoppingBasketItemByUserIdAndBasketId(productId, shoppingBasket.getId());
-            if (shoppingBasketItemList.isEmpty()) {
-                ShoppingBasketItem shoppingBasketItem = new ShoppingBasketItem();
-                shoppingBasketItem.setQuantity(1L);
-                Product product = productService.getProductById(productId);
-                shoppingBasketItem.setProduct(product);
-                shoppingBasketItem.setShoppingBasket(shoppingBasket);
-                List<ShoppingBasketItem> shoppingBasketItems = shoppingBasket.getShoppingBasketItems();
-                shoppingBasketItems.add(shoppingBasketItem);
-                shoppingBasket.setShoppingBasketItems(shoppingBasketItems);
-                shoppingBasketService.createShoppingBasket(shoppingBasket);
-            } else {
-                ShoppingBasketItem shoppingBasketItem = shoppingBasketItemList.get(0);
-                shoppingBasketItem.setQuantity(shoppingBasketItem.getQuantity() + 1);
-                shoppingBasketItemService.addShoppingBasketItem(shoppingBasketItem);
-            }
-            return new ResponseEntity<>(shoppingBasket, HttpStatus.OK);
+            ShoppingBasketItem shoppingBasketItem = userService.addItemToUserBasket(userId, productId);
+            return new ResponseEntity<>(shoppingBasketItem, HttpStatus.OK);
         }
     }
     @PreAuthorize("hasAuthority('USER')")
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUserById(@PathVariable Long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         if (!userPrincipal.getUserId().equals(userId)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);

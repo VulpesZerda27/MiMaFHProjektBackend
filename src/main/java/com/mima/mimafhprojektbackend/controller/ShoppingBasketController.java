@@ -15,17 +15,10 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/shoppingbasket")
+@RequestMapping("/shoppingBasket")
 public class ShoppingBasketController
 {
     private final ShoppingBasketService  shoppingBasketService;
 
-    @GetMapping
-    public List<ShoppingBasket> GetAllShoppingBaskets() {
-        return shoppingBasketService.GetAllShoppingBaskets();
-    }
-    @GetMapping("/{shoppingBasketId}")
-    public ShoppingBasket getShoppingBasketById(@PathVariable Long shoppingBasketId) {
-        return shoppingBasketService.getShoppingBasketById(shoppingBasketId);
-    }
+    //No interaction with ShoppingBaskets over endpoints.
 }

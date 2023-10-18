@@ -17,7 +17,9 @@ public class ShoppingBasket {
     @GeneratedValue
     private Long id;
 
-    @JsonIgnore
+    @OneToOne(mappedBy = "shoppingBasket", cascade = jakarta.persistence.CascadeType.ALL)
+    private MyUser user;
+
     @Cascade(CascadeType.ALL)
     @OneToMany(mappedBy = "shoppingBasket")
     private List<ShoppingBasketItem> shoppingBasketItems;

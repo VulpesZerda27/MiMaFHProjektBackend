@@ -5,10 +5,8 @@ import com.mima.mimafhprojektbackend.dto.ShoppingBasketItemDTO;
 import com.mima.mimafhprojektbackend.model.MyUser;
 import com.mima.mimafhprojektbackend.model.ShoppingBasket;
 import com.mima.mimafhprojektbackend.model.ShoppingBasketItem;
-import com.mima.mimafhprojektbackend.repository.UserRepository;
 import com.mima.mimafhprojektbackend.security.UserPrincipal;
 import com.mima.mimafhprojektbackend.service.ShoppingBasketItemService;
-import com.mima.mimafhprojektbackend.service.ShoppingBasketService;
 import com.mima.mimafhprojektbackend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,11 +24,10 @@ import java.util.Optional;
 public class ShoppingBasketItemController {
 
     private final ShoppingBasketItemService  shoppingBasketItemService;
-    private final UserService userService;
 
     @GetMapping("/{userId}")
     public List<ShoppingBasketItem> GetAllShoppingBasketItemsOfUser(@PathVariable Long userId) {
-        return shoppingBasketItemService.getShoppingBasketItemByUserId(userId);
+        return shoppingBasketItemService.getShoppingBasketItemsByUserId(userId);
     }
 
     @PostMapping
@@ -41,12 +37,8 @@ public class ShoppingBasketItemController {
 
     @PutMapping("/{shoppingBasketItemId}")
     public ResponseEntity<ShoppingBasketItem> updateShoppingBasketItem(@PathVariable Long shoppingBasketItemId, @RequestBody @Valid ShoppingBasketItemDTO shoppingBasketItemDTO) {
-        ShoppingBasketItem shoppingBasketItem = shoppingBasketItemService.getShoppingBasketItemById(shoppingBasketItemId);
-        ShoppingBasket shoppingBasket = shoppingBasketItem.getShoppingBasket();
-        MyUser user = userService.getUserByShoppingBasketId(shoppingBasket.getId());
-
+        MyUser user = shoppingBasketItemService.getShoppingBasketItemById(shoppingBasketItemId).getShoppingBasket().getUser();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
         if (!userPrincipal.getUserId().equals(user.getId())) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
