@@ -6,10 +6,12 @@ import com.mima.mimafhprojektbackend.model.MyUser;
 import com.mima.mimafhprojektbackend.model.ShoppingBasket;
 import com.mima.mimafhprojektbackend.model.ShoppingBasketItem;
 import com.mima.mimafhprojektbackend.security.UserPrincipal;
+import com.mima.mimafhprojektbackend.service.AuthService;
 import com.mima.mimafhprojektbackend.service.ShoppingBasketItemService;
 import com.mima.mimafhprojektbackend.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,35 +26,50 @@ import java.util.List;
 public class ShoppingBasketItemController {
 
     private final ShoppingBasketItemService  shoppingBasketItemService;
+    private final UserService userService;
+    private final AuthService authService;
 
     @GetMapping("/{userId}")
-    public List<ShoppingBasketItem> GetAllShoppingBasketItemsOfUser(@PathVariable Long userId) {
-        return shoppingBasketItemService.getShoppingBasketItemsByUserId(userId);
+    public ResponseEntity<List<ShoppingBasketItem>> GetAllShoppingBasketItemsOfUser(@PathVariable Long userId) {
+        MyUser user = userService.getUserById(userId);
+        if (authService.isLoggedInUserOrAdmin(user)) {
+            return new ResponseEntity<>(shoppingBasketItemService.getShoppingBasketItemsByUserId(userId), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 
-    @PostMapping
-    public ShoppingBasketItem addShoppingBasketItem(ShoppingBasketItem shoppingBasketItem) {
-        return shoppingBasketItemService.addShoppingBasketItem(shoppingBasketItem);
+    @PostMapping("/{userId}/{productId}")
+    public ResponseEntity<ShoppingBasketItem> addShoppingBasketItem(@PathVariable Long userId, @PathVariable Long productId) {
+        MyUser user = userService.getUserById(userId);
+        if (authService.isLoggedInUser(user)) {
+            ShoppingBasketItem shoppingBasketItem = userService.addItemToUserBasket(userId, productId);
+            return new ResponseEntity<>(shoppingBasketItem, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 
     @PutMapping("/{shoppingBasketItemId}")
     public ResponseEntity<ShoppingBasketItem> updateShoppingBasketItem(@PathVariable Long shoppingBasketItemId, @RequestBody @Valid ShoppingBasketItemDTO shoppingBasketItemDTO) {
         MyUser user = shoppingBasketItemService.getShoppingBasketItemById(shoppingBasketItemId).getShoppingBasket().getUser();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        if (!userPrincipal.getUserId().equals(user.getId())) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else {
+        if (authService.isLoggedInUser(user)) {
             return new ResponseEntity<>(shoppingBasketItemService.updateShoppingBasketItem(shoppingBasketItemId, shoppingBasketItemDTO), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
 
     @DeleteMapping("/{shoppingBasketItemId}")
-    public void deleteShoppingBasketItemById(@PathVariable Long shoppingBasketItemId) {
-        shoppingBasketItemService.deleteShoppingBasketItemById(shoppingBasketItemId);
+    public ResponseEntity<ShoppingBasketItem> deleteShoppingBasketItemById(@PathVariable Long shoppingBasketItemId) {
+        MyUser user = shoppingBasketItemService.getShoppingBasketItemById(shoppingBasketItemId).getShoppingBasket().getUser();
+        if (authService.isLoggedInUser(user)) {
+            shoppingBasketItemService.deleteShoppingBasketItemById(shoppingBasketItemId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 
 
 }
-
-// response entities ergänzen wie bei usercontroller

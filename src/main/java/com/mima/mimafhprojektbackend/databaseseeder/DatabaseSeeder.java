@@ -24,7 +24,7 @@ import java.util.List;
 public class DatabaseSeeder implements CommandLineRunner {
 
     @Autowired
-    private BookAuthorRepository bookAuthorRepository;
+    private AuthorRepository authorRepository;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -50,7 +50,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         // Populate BookAuthors
         List<Author> authors = loadBookAuthorsFromCSV("/data/book_author.csv");
-        bookAuthorRepository.saveAll(authors);
+        authorRepository.saveAll(authors);
 
         // Populate Categories
         List<Category> categories = loadCategoriesFromCSV("/data/category.csv");
@@ -191,7 +191,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
                 // Linking to BookAuthor
                 Long authorId = Long.parseLong(fields[6].trim());
-                Author author = bookAuthorRepository.findById(authorId).orElse(null);
+                Author author = authorRepository.findById(authorId).orElse(null);
                 product.setAuthor(author);
 
                 product.setImageName(fields[7].trim());

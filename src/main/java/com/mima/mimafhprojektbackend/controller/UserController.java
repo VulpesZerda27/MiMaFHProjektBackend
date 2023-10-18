@@ -1,14 +1,12 @@
 package com.mima.mimafhprojektbackend.controller;
+import com.mima.mimafhprojektbackend.dto.MyUserDTO;
 import com.mima.mimafhprojektbackend.model.MyUser;
 import com.mima.mimafhprojektbackend.model.Product;
 import com.mima.mimafhprojektbackend.model.ShoppingBasket;
 import com.mima.mimafhprojektbackend.model.ShoppingBasketItem;
 import com.mima.mimafhprojektbackend.security.UserPrincipal;
 import com.mima.mimafhprojektbackend.security.UserPrincipalAuthenticationToken;
-import com.mima.mimafhprojektbackend.service.ProductService;
-import com.mima.mimafhprojektbackend.service.ShoppingBasketItemService;
-import com.mima.mimafhprojektbackend.service.ShoppingBasketService;
-import com.mima.mimafhprojektbackend.service.UserService;
+import com.mima.mimafhprojektbackend.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +15,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,10 +31,16 @@ import java.util.stream.Collectors;
 @RequestMapping("/user")
 public class UserController {
     private final UserService userService;
+    private final AuthService authService;
 
-    @GetMapping("/{userid}")
-    public MyUser getUserById(@PathVariable Long userid) {
-        return userService.getUserById(userid);
+    @GetMapping("/{userId}")
+    public ResponseEntity<MyUser> getUserById(@PathVariable Long userId) {
+        MyUser user = userService.getUserById(userId);
+        if (authService.isLoggedInUserOrAdmin(user)) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
     }
 
     @PostMapping
@@ -43,27 +49,29 @@ public class UserController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
-    @PostMapping("/basket/{userId}/{productId}")
-    public ResponseEntity<ShoppingBasketItem> addItemToUserBasket(@PathVariable Long userId, @PathVariable Long productId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        if (!userPrincipal.getUserId().equals(userId)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else {
-            ShoppingBasketItem shoppingBasketItem = userService.addItemToUserBasket(userId, productId);
-            return new ResponseEntity<>(shoppingBasketItem, HttpStatus.OK);
-        }
-    }
-    @PreAuthorize("hasAuthority('USER')")
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUserById(@PathVariable Long userId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        if (!userPrincipal.getUserId().equals(userId)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else {
+        MyUser user = userService.getUserById(userId);
+        if (authService.isLoggedInUserOrAdmin(user)) {
             userService.deleteUserById(userId);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+    }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<MyUser> updateUser(@PathVariable Long userId, @RequestBody @Valid MyUserDTO userDTO) {
+        MyUser user = userService.getUserById(userId);
+        if (authService.isLoggedInUserOrAdmin(user)) {
+            return new ResponseEntity<>(userService.updateUser(userId, userDTO), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    @GetMapping
+    public List<MyUser> getAllUsers() {
+        return userService.getAllUsers();
     }
     }

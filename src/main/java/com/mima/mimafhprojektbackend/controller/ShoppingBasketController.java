@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/shoppingBasket")
+@RequestMapping("/basket")
 public class ShoppingBasketController
 {
     private final ShoppingBasketService  shoppingBasketService;

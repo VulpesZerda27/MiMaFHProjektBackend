@@ -29,4 +29,21 @@ public class CategoryController {
     public Category getCategoryById(@PathVariable Long categoryId) {
         return categoryService.getCategoryById(categoryId);
     }
+
+    @PostMapping
+    public ResponseEntity<Category> createCategory(@RequestBody @Valid Category category) {
+        Category createdCategory = categoryService.createCategory(category);
+        return new ResponseEntity<>(createdCategory, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{categoryId}")
+    public Category updateCategory(@PathVariable Long categoryId, @RequestBody @Valid Category categoryDetails) {
+        return categoryService.updateCategory(categoryId, categoryDetails);
+    }
+
+    @DeleteMapping("/{categoryId}")
+    public ResponseEntity<Void> deleteCategoryById(@PathVariable Long categoryId) {
+        categoryService.deleteCategoryById(categoryId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

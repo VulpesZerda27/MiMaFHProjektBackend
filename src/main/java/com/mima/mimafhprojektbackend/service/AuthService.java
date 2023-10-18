@@ -1,14 +1,18 @@
 package com.mima.mimafhprojektbackend.service;
 
 import com.mima.mimafhprojektbackend.model.LoginResponse;
+import com.mima.mimafhprojektbackend.model.MyUser;
 import com.mima.mimafhprojektbackend.security.JwtIssuer;
 import com.mima.mimafhprojektbackend.security.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +39,26 @@ public class AuthService {
 
     public void invalidateSessionToken() {
         SecurityContextHolder.clearContext();
+    }
+
+    public boolean isLoggedInUser(MyUser user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        return userPrincipal.getUserId().equals(user.getId());
+    }
+
+    public boolean isLoggedInUserOrAdmin(MyUser user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+
+        boolean isAdmin = false;
+
+        for (GrantedAuthority authority:
+                userPrincipal.getAuthorities()) {
+            if(Objects.equals(authority.getAuthority(), "ADMIN")) isAdmin = true;
+        }
+
+        return userPrincipal.getUserId().equals(user.getId()) || isAdmin;
     }
 }
 

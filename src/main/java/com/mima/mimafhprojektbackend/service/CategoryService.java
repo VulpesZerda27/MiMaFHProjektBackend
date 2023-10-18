@@ -19,4 +19,19 @@ public class CategoryService {
         return categoryRepository.findById(categoryId).orElseThrow();
     }
 
+    public Category createCategory(Category category) {
+        return categoryRepository.save(category);
+    }
+
+    public Category updateCategory(Long categoryId, Category categoryDetails) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow();
+        category.setName(categoryDetails.getName());
+        category.setId(categoryDetails.getId());
+        return categoryRepository.save(category);
+    }
+
+    public void deleteCategoryById(Long categoryId) {
+        categoryRepository.findById(categoryId).orElseThrow();
+        categoryRepository.deleteById(categoryId);
+    }
 }

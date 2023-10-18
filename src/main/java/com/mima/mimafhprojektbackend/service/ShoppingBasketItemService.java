@@ -16,10 +16,6 @@ public class ShoppingBasketItemService {
     private final ShoppingBasketItemRepository shoppingBasketItemRepository;
     private final UserRepository userRepository;
 
-    public List<ShoppingBasketItem> GetAllShoppingBasketItems() {
-        return shoppingBasketItemRepository.findAll();
-    }
-
     public List<ShoppingBasketItem> getShoppingBasketItemsByUserId(Long userId) {
         MyUser user = userRepository.findById(userId).orElseThrow();
         return user.getShoppingBasket().getShoppingBasketItems();

@@ -1,24 +1,14 @@
 package com.mima.mimafhprojektbackend.controller;
 
-import com.mima.mimafhprojektbackend.dto.MyUserDTO;
-import com.mima.mimafhprojektbackend.model.MyUser;
-import com.mima.mimafhprojektbackend.service.AdminService;
 import com.mima.mimafhprojektbackend.service.UserService;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
-import java.util.Optional;
 
 import static net.bytebuddy.matcher.ElementMatchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,11 +22,6 @@ class UserControllerTest {
     @Mock
     private UserService myUserService;
 
-    @InjectMocks
-    private AdminController adminController;
-
-    @Mock
-    private AdminService adminService;
 
     /*@org.junit.jupiter.api.Test
     void testGetUserById() {

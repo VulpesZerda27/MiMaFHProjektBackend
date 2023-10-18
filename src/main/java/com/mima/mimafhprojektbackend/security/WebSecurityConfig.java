@@ -38,6 +38,17 @@ public class WebSecurityConfig {
                 .securityMatcher("/**")
                 .authorizeHttpRequests(registry -> registry
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers( HttpMethod.GET, "/user").hasAuthority("ADMIN")
+                        .requestMatchers( HttpMethod.POST, "/category").hasAuthority("ADMIN")
+                        .requestMatchers( HttpMethod.PUT, "/category/").hasAuthority("ADMIN")
+                        .requestMatchers( HttpMethod.DELETE, "/category/").hasAuthority("ADMIN")
+                        .requestMatchers( HttpMethod.POST, "/author").hasAuthority("ADMIN")
+                        .requestMatchers( HttpMethod.PUT, "/author/").hasAuthority("ADMIN")
+                        .requestMatchers( HttpMethod.DELETE, "/author/").hasAuthority("ADMIN")
+                        .requestMatchers( HttpMethod.POST, "/product").hasAuthority("ADMIN")
+                        .requestMatchers( HttpMethod.PUT, "/product/").hasAuthority("ADMIN")
+                        .requestMatchers( HttpMethod.DELETE, "/product/").hasAuthority("ADMIN")
+                        .requestMatchers( HttpMethod.POST, "/image/").hasAuthority("ADMIN")
                         .anyRequest().permitAll()
                 );
         return http.build();
