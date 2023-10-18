@@ -32,4 +32,10 @@ public class AuthService {
                 .accessToken(token)
                 .build();
     }
+
+    public void LogoutService() {
+        // Invalidate the user's session
+        SecurityContextHolder.clearContext();
+    }
 }
+

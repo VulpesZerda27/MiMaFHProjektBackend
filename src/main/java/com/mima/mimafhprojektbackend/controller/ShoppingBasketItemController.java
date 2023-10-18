@@ -54,3 +54,5 @@ public class ShoppingBasketItemController {
 
 
 }
+
+// response entities ergänzen wie bei usercontroller
