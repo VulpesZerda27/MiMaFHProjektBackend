@@ -33,8 +33,7 @@ public class AuthService {
                 .build();
     }
 
-    public void LogoutService() {
-        // Invalidate the user's session
+    public void invalidateSessionToken() {
         SecurityContextHolder.clearContext();
     }
 }

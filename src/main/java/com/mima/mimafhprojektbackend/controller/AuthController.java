@@ -20,11 +20,9 @@ public class AuthController {
         return authService.authenticateLogin(request.getEmail(), request.getPassword());
     }
 
-    @GetMapping("/auth/logout") // Change the annotation to @GetMapping
-    public ResponseEntity<String> logout(AuthService logoutService) {
-        // Call the logout method in your AuthService to handle the logout operation
-        logoutService.LogoutService(); // Assuming LogoutService() method invalidates the session/token
-        SecurityContextHolder.clearContext(); // Clear the security context
-        return ResponseEntity.noContent().build(); // 204 status code for successful logout
+    @GetMapping("/auth/logout")
+    public ResponseEntity<String> logout(AuthService authService) {
+        authService.invalidateSessionToken();
+        return ResponseEntity.noContent().build();
     }
 }
