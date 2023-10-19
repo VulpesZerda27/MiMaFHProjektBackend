@@ -2,7 +2,7 @@ package com.mima.mimafhprojektbackend.databaseseeder;
 
 import com.mima.mimafhprojektbackend.model.*;
 import com.mima.mimafhprojektbackend.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
@@ -18,59 +18,42 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-@Profile("seed")
+@Profile("testing")
+@RequiredArgsConstructor
 @Component
-public class DatabaseSeeder implements CommandLineRunner {
+public class TestingDatabaseSeeder implements CommandLineRunner {
 
-    @Autowired
-    private AuthorRepository authorRepository;
+    private final AuthorRepository authorRepository;
+    private final CategoryRepository categoryRepository;
+    private final UserRepository myUserRepository;
+    private final ProductRepository productRepository;
+    private final ShoppingBasketRepository shoppingBasketRepository;
+    private final ShoppingBasketItemRepository shoppingBasketItemRepository;
+    private final RoleRepository roleRepository;
+    private final List<ShoppingBasket> shoppingBaskets = new ArrayList<>();
 
-    @Autowired
-    private CategoryRepository categoryRepository;
-
-    @Autowired
-    private UserRepository myUserRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private ShoppingBasketRepository shoppingBasketRepository;
-    @Autowired
-    private ShoppingBasketItemRepository shoppingBasketItemRepository;
-
-    private List<ShoppingBasket> shoppingBaskets = new ArrayList<>();
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseSeeder.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestingDatabaseSeeder.class);
 
     @Override
     public void run(String... args) throws Exception {
         LOGGER.info("Starting data seeding...");
 
-        // Populate BookAuthors
         List<Author> authors = loadBookAuthorsFromCSV("/data/book_author.csv");
         authorRepository.saveAll(authors);
 
-        // Populate Categories
         List<Category> categories = loadCategoriesFromCSV("/data/category.csv");
         categoryRepository.saveAll(categories);
 
-
-        // Populate MyUsers
         List<MyUser> users = loadMyUsersFromCSV("/data/my_user.csv");
         shoppingBasketRepository.saveAll(shoppingBaskets);
         myUserRepository.saveAll(users);
 
-        // Populate Products
         List<Product> products = loadProductsFromCSV("/data/product.csv");
         productRepository.saveAll(products);
 
-        // Populate ShoppingBaskets
-        /*List<ShoppingBasket> baskets = loadShoppingBasketsFromCSV("/data/shopping_basket.csv");
-        shoppingBasketRepository.saveAll(baskets);
-        */
-        // Populate ShoppingBasketItems
         List<ShoppingBasketItem> items = loadShoppingBasketItemsFromCSV("/data/shopping_basket_item.csv");
         shoppingBasketItemRepository.saveAll(items);
 
@@ -79,7 +62,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private List<ShoppingBasketItem> loadShoppingBasketItemsFromCSV(String fileName) throws Exception {
         List<ShoppingBasketItem> items = new ArrayList<>();
-        Resource resource = new ClassPathResource(fileName);  // Use ClassPathResource to load the CSV
+        Resource resource = new ClassPathResource(fileName);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -88,12 +71,10 @@ public class DatabaseSeeder implements CommandLineRunner {
                 item.setId(Long.parseLong(fields[0].trim()));
                 item.setQuantity(Long.parseLong(fields[1].trim()));
 
-                // Linking to ShoppingBasket
                 Long basketId = Long.parseLong(fields[2].trim());
                 ShoppingBasket basket = shoppingBasketRepository.findById(basketId).orElse(null);
                 item.setShoppingBasket(basket);
 
-                // Linking to Product
                 Long productId = Long.parseLong(fields[3].trim());
                 Product product = productRepository.findById(productId).orElse(null);
                 item.setProduct(product);
@@ -106,7 +87,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private List<Category> loadCategoriesFromCSV(String fileName) throws Exception {
         List<Category> categories = new ArrayList<>();
-        Resource resource = new ClassPathResource(fileName);  // Use ClassPathResource to load the CSV
+        Resource resource = new ClassPathResource(fileName);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -122,7 +103,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private List<Author> loadBookAuthorsFromCSV(String fileName) throws Exception {
         List<Author> authors = new ArrayList<>();
-        Resource resource = new ClassPathResource(fileName);  // Use ClassPathResource to load the CSV
+        Resource resource = new ClassPathResource(fileName);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -140,7 +121,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private List<MyUser> loadMyUsersFromCSV(String fileName) throws Exception {
         List<MyUser> users = new ArrayList<>();
-        Resource resource = new ClassPathResource(fileName);  // Use ClassPathResource to load the CSV
+        Resource resource = new ClassPathResource(fileName);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -156,18 +137,30 @@ public class DatabaseSeeder implements CommandLineRunner {
                 user.setPassword(bcryptPassword);
 
                 String[] roleFields = fields[5].trim().split(";");
-                user.setRoles(Arrays.asList(roleFields));
+                Set<Role> userRoles = Arrays.stream(roleFields)
+                        .map(roleName -> findOrCreateRoleByName(roleName.trim()))
+                        .collect(Collectors.toSet());
+                user.setRoles(userRoles);
 
-                // Create a new ShoppingBasket for the user and set it
                 ShoppingBasket basket = new ShoppingBasket();
                 shoppingBaskets.add(basket);
-                user.setShoppingBasket(basket);   // this will also set the user for the basket because of the bidirectional association
+                user.setShoppingBasket(basket);
                 user.setEnabled(true);
                 users.add(user);
             }
         }
         return users;
     }
+
+    private Role findOrCreateRoleByName(String roleName) {
+        return roleRepository.findByName(roleName)
+                .orElseGet(() -> {
+                    Role newRole = new Role();
+                    newRole.setName(roleName);
+                    return roleRepository.save(newRole);
+                });
+    }
+
 
 
     private List<Product> loadProductsFromCSV(String fileName) throws Exception {
@@ -184,12 +177,10 @@ public class DatabaseSeeder implements CommandLineRunner {
                 product.setPrice(Double.parseDouble(fields[3].trim()));
                 product.setQuantity(Integer.parseInt(fields[4].trim()));
 
-                // Linking to Category
                 Long categoryId = Long.parseLong(fields[5].trim());
                 Category category = categoryRepository.findById(categoryId).orElse(null);
                 product.setCategory(category);
 
-                // Linking to BookAuthor
                 Long authorId = Long.parseLong(fields[6].trim());
                 Author author = authorRepository.findById(authorId).orElse(null);
                 product.setAuthor(author);

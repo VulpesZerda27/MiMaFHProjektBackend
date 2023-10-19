@@ -1,5 +1,6 @@
 package com.mima.mimafhprojektbackend.security;
 
+import com.mima.mimafhprojektbackend.model.Role;
 import com.mima.mimafhprojektbackend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,8 +22,8 @@ public class CustomUserDetailService implements UserDetailsService {
         var userRoles = user.getRoles();
         List<SimpleGrantedAuthority> userAuthorities = new ArrayList<>();
 
-        for (String role : userRoles) {
-            userAuthorities.add(new SimpleGrantedAuthority(role));
+        for (Role role : userRoles) {
+            userAuthorities.add(new SimpleGrantedAuthority(role.getName()));
         }
 
         return UserPrincipal.builder()

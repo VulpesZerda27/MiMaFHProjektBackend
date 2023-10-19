@@ -1,10 +1,8 @@
 package com.mima.mimafhprojektbackend.service;
 import com.mima.mimafhprojektbackend.dto.MyUserDTO;
 import com.mima.mimafhprojektbackend.exceptions.EmailAlreadyRegisteredException;
-import com.mima.mimafhprojektbackend.model.MyUser;
-import com.mima.mimafhprojektbackend.model.Product;
-import com.mima.mimafhprojektbackend.model.ShoppingBasket;
-import com.mima.mimafhprojektbackend.model.ShoppingBasketItem;
+import com.mima.mimafhprojektbackend.model.*;
+import com.mima.mimafhprojektbackend.repository.RoleRepository;
 import com.mima.mimafhprojektbackend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +12,14 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final RoleService roleService;
     private final ProductService productService;
     private final ShoppingBasketService shoppingBasketService;
     private final ShoppingBasketItemService shoppingBasketItemService;
@@ -39,7 +40,7 @@ public class UserService {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String bcryptPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(bcryptPassword);
-        user.setRoles(Arrays.asList("USER"));
+        user.getRoles().add(roleService.findByName("USER"));
         user.setEnabled(true);
         user.setShoppingBasket(new ShoppingBasket());
         return userRepository.save(user);
@@ -89,8 +90,12 @@ public class UserService {
             user.setEmail(userDTO.getEmail());
         }
         if (userDTO.getRoles() != null) {
-            user.setRoles(userDTO.getRoles());
+            Set<Role> userRoles = userDTO.getRoles().stream()
+                    .map(roleName -> roleService.findByName(roleName.trim()))
+                    .collect(Collectors.toSet());
+            user.setRoles(userRoles);
         }
+
         if (userDTO.getEnabled() != null)
             user.setEnabled(userDTO.getEnabled());
         return userRepository.save(user);
