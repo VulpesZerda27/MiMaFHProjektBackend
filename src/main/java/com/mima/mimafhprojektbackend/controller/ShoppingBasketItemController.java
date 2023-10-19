@@ -70,6 +70,4 @@ public class ShoppingBasketItemController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
-
-
 }

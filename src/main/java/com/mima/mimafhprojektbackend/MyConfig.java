@@ -17,6 +17,7 @@ public class MyConfig {
                         .allowedOrigins(
                                 "http://127.0.0.1:8081",
                                 "http://127.0.0.1:8082",
+                                "http://127.0.0.1:8083",
                                 "https://bookshop.vulpeszerda.at",
                                 "http://localhost:63342",
                                 "http://localhost:63343")
