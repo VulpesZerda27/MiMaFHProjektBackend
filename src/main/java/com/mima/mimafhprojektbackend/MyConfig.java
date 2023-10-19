@@ -14,7 +14,12 @@ public class MyConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://127.0.0.1:8081","http://127.0.0.1:8082", "https://bookshop.vulpeszerda.at")
+                        .allowedOrigins(
+                                "http://127.0.0.1:8081",
+                                "http://127.0.0.1:8082",
+                                "https://bookshop.vulpeszerda.at",
+                                "http://localhost:63342",
+                                "http://localhost:63343")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS");
             }
         };
