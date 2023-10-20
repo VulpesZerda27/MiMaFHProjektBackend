@@ -8,7 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,11 +34,10 @@ class UserServiceTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
         // Action
-        Optional<MyUser> result = userService.getUserById(userId);
+        MyUser result = userService.getUserById(userId);
 
         // Assert
-        assertTrue(result.isPresent());
-        assertEquals(user, result.get());
+        assertEquals(user, result);
     }
 
     @org.junit.jupiter.api.Test
@@ -50,14 +48,13 @@ class UserServiceTest {
         user.setEmail(email);
 
         // Mock behavior
-        when(userRepository.getMyUserByEmail(email)).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
         // Action
-        Optional<MyUser> result = userService.getUserByEmail(email);
+        MyUser result = userService.getUserByEmail(email);
 
         // Assert
-        assertTrue(result.isPresent());
-        assertEquals(user, result.get());
+        assertEquals(user, result);
     }
 
     @org.junit.jupiter.api.Test
@@ -67,7 +64,7 @@ class UserServiceTest {
         user.setEmail("test@test.com");
 
         // Mock behavior
-        when(userRepository.getMyUserByEmail(user.getEmail())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.of(user));
 
         // Action & Assert
         assertThrows(EmailAlreadyRegisteredException.class, () -> userService.createUser(user));

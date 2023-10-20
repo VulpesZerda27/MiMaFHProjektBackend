@@ -1,30 +1,13 @@
 package com.mima.mimafhprojektbackend.controller;
 import com.mima.mimafhprojektbackend.dto.MyUserDTO;
 import com.mima.mimafhprojektbackend.model.MyUser;
-import com.mima.mimafhprojektbackend.model.Product;
-import com.mima.mimafhprojektbackend.model.ShoppingBasket;
-import com.mima.mimafhprojektbackend.model.ShoppingBasketItem;
-import com.mima.mimafhprojektbackend.security.UserPrincipal;
-import com.mima.mimafhprojektbackend.security.UserPrincipalAuthenticationToken;
 import com.mima.mimafhprojektbackend.service.*;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
-
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor

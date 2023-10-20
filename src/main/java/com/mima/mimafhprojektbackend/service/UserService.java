@@ -2,14 +2,11 @@ package com.mima.mimafhprojektbackend.service;
 import com.mima.mimafhprojektbackend.dto.MyUserDTO;
 import com.mima.mimafhprojektbackend.exceptions.EmailAlreadyRegisteredException;
 import com.mima.mimafhprojektbackend.model.*;
-import com.mima.mimafhprojektbackend.repository.RoleRepository;
 import com.mima.mimafhprojektbackend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,10 +25,10 @@ public class UserService {
         return userRepository.findById(userId).orElseThrow();
     }
     public MyUser getUserByEmail(String email) {
-        return userRepository.getMyUserByEmail(email).orElseThrow();
+        return userRepository.findByEmail(email).orElseThrow();
     }
     public MyUser createUser(MyUser user) throws EmailAlreadyRegisteredException {
-        Optional<MyUser> optionalMyUser = userRepository.getMyUserByEmail(user.getEmail());
+        Optional<MyUser> optionalMyUser = userRepository.findByEmail(user.getEmail());
 
         if(optionalMyUser.isPresent()) {
             throw new EmailAlreadyRegisteredException("The email " + user.getEmail() + " is already registered.");
