@@ -44,7 +44,7 @@ public class ShoppingBasketItemController {
         MyUser user = userService.getUserById(userId);
         if (authService.isLoggedInUser(user)) {
             ShoppingBasketItem shoppingBasketItem = userService.addItemToUserBasket(userId, productId);
-            return new ResponseEntity<>(shoppingBasketItem, HttpStatus.OK);
+            return new ResponseEntity<>(shoppingBasketItem, HttpStatus.CREATED);
         } else {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }

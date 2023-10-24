@@ -4,10 +4,7 @@ package com.mima.mimafhprojektbackend.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mima.mimafhprojektbackend.dto.ProductDTO;
-import com.mima.mimafhprojektbackend.model.Author;
-import com.mima.mimafhprojektbackend.model.Category;
-import com.mima.mimafhprojektbackend.model.MyUser;
-import com.mima.mimafhprojektbackend.model.Product;
+import com.mima.mimafhprojektbackend.model.*;
 import com.mima.mimafhprojektbackend.service.AuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +35,9 @@ public class CreateTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private AuthService authService;
 
     @Test
     public void testCreateUser() throws Exception {
@@ -87,6 +87,26 @@ public class CreateTests {
         assertEquals(productDTO.getDescription(), createdProduct.getDescription());
         assertEquals(productDTO.getPrice(), createdProduct.getPrice());
         assertEquals(productDTO.getQuantity(), createdProduct.getQuantity());
+    }
+
+    @Test
+    @WithMockUser(authorities = "USER")
+    public void testCreateShoppingBasketItem() throws Exception {
+        when(authService.isLoggedInUser(any())).thenReturn(true);
+
+        Long userId = 1L;
+        Long productId = 1L;
+
+        MvcResult postResult = mockMvc.perform(post("/basketItem/" + userId + "/" + productId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        String responseContent = postResult.getResponse().getContentAsString();
+        ShoppingBasketItem createdShoppingBasketItem = objectMapper.readValue(responseContent, ShoppingBasketItem.class);
+
+        assertNotNull(createdShoppingBasketItem);
+        assertEquals(1L, createdShoppingBasketItem.getProduct().getId());
     }
 
     @Test

@@ -2,12 +2,16 @@ package com.mima.mimafhprojektbackend.service;
 
 import com.mima.mimafhprojektbackend.exceptions.EmailAlreadyRegisteredException;
 import com.mima.mimafhprojektbackend.model.MyUser;
+import com.mima.mimafhprojektbackend.model.Role;
 import com.mima.mimafhprojektbackend.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,9 +25,12 @@ class UserServiceTest {
     private UserService userService;
 
     @Mock
+    private RoleService roleService;
+
+    @Mock
     private UserRepository userRepository;
 
-    @org.junit.jupiter.api.Test
+    @Test
     void testGetUserById() {
         // Mock data
         Long userId = 1L;
@@ -40,7 +47,7 @@ class UserServiceTest {
         assertEquals(user, result);
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void testGetUserByEmail() {
         // Mock data
         String email = "test@test.com";
@@ -57,7 +64,7 @@ class UserServiceTest {
         assertEquals(user, result);
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     void testCreateUser_EmailAlreadyExists() {
         // Mock data
         MyUser user = new MyUser();
@@ -70,49 +77,31 @@ class UserServiceTest {
         assertThrows(EmailAlreadyRegisteredException.class, () -> userService.createUser(user));
     }
 
-    /*@org.junit.jupiter.api.Test
+    @Test
     void testCreateUser() throws EmailAlreadyRegisteredException {
         // Mock data
         MyUser user = new MyUser();
         user.setEmail("newuser@test.com");
         user.setPassword("plaintextpassword");
 
-        MyUser savedUser = new MyUser();
-        savedUser.setEmail("newuser@test.com");
-        // This will typically be some hashed value.
-        savedUser.setPassword("hashedpassword");
-        savedUser.setRoles(Arrays.asList("USER"));
+        Role role = new Role();
+
+        role.setName("USER");
+        role.setId(1L);
 
         // Mock behavior
-        when(userRepository.getMyUserByEmail(user.getEmail())).thenReturn(null);
-        when(userRepository.save(any(MyUser.class))).thenReturn(savedUser);
+        when(userRepository.findByEmail(user.getEmail())).thenReturn(Optional.empty());
+        when(userRepository.save(any(MyUser.class))).thenReturn(user);
+        when(roleService.findByName("USER")).thenReturn(role);
 
         // Action
         MyUser result = userService.createUser(user);
 
         // Assert
-        assertEquals(savedUser, result);
+        assertEquals(user, result);
     }
 
-    @org.junit.jupiter.api.Test
-    void testDeleteUserById() {
-        // Mock data
-        Long userId = 1L;
-        MyUser user = new MyUser();
-        user.setId(userId);
-
-        // Mock behavior
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-
-        // Action
-        Optional<MyUser> result = userService.deleteUserById(userId);
-
-        // Assert
-        assertTrue(result.isPresent());
-        assertEquals(user, result.get());
-    }
-
-    @org.junit.jupiter.api.Test
+    @Test
     void testDeleteUserById_NotFound() {
         // Mock data
         Long userId = 1L;
@@ -120,10 +109,7 @@ class UserServiceTest {
         // Mock behavior
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        // Action
-        Optional<MyUser> result = userService.deleteUserById(userId);
-
         // Assert
-        assertFalse(result.isPresent());
-    }*/
+        assertThrows(NoSuchElementException.class, () -> userService.deleteUserById(userId));
+    }
 }

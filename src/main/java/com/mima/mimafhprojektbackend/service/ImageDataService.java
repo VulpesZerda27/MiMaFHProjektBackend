@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 @RequiredArgsConstructor
 public class ImageDataService {
     private final ProductService productService;
+    private final FileService fileService;
     private final String uploadDir = "src/main/java/com/mima/mimafhprojektbackend/images";
 
     public ResponseEntity<Product> addImageToProduct(Long productId, MultipartFile imageFile){
@@ -52,7 +53,7 @@ public class ImageDataService {
         imageUUID = imageFile.getOriginalFilename();
         Path fileNameAndPath = Paths.get(uploadDir, imageUUID);
 
-        Files.write(fileNameAndPath, imageFile.getBytes());
+        fileService.writeToFile(fileNameAndPath, imageFile.getBytes());
 
         return imageUUID;
     }
@@ -68,7 +69,7 @@ public class ImageDataService {
 
         Path imagePath = getImagePath(imageName);
 
-        if (!Files.exists(imagePath)) {
+        if (!fileService.fileExists(imagePath)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -91,11 +92,15 @@ public class ImageDataService {
     }
 
     public Resource downloadImage(Path imagePath) throws MalformedURLException {
-        Resource resource = new UrlResource(imagePath.toUri());
+        Resource resource = getResource(imagePath);
         if (!resource.exists() || !resource.isReadable()) {
             throw new RuntimeException("Failed to read the file!");
         }
         return resource;
+    }
+
+    protected Resource getResource(Path imagePath) throws MalformedURLException {
+        return new UrlResource(imagePath.toUri());
     }
 
     public Path getImagePath(String imageName) {

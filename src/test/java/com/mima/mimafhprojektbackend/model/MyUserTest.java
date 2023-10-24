@@ -53,11 +53,6 @@ class MyUserTest {
     }
 
     @Test
-    void testRoles() {
-
-    }
-
-    @Test
     void testShoppingBasket() {
         ShoppingBasket shoppingBasket = new ShoppingBasket();
         myUser.setShoppingBasket(shoppingBasket);
